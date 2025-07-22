@@ -1,0 +1,35 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.print-area {
+    display: none;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .print-area, .print-area * {
+        visibility: visible;
+    }
+    .print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    .no-print {
+        display: none;
+    }
+}
+
+/* Custom styles for status badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
