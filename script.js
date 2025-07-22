@@ -3,6 +3,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, addDoc, onSnapshot, collection, query, deleteDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+// --- Lógica de Proteção de Página ---
+function checkAuth() {
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'login.html';
+    } else {
+        document.getElementById('app-container').classList.remove('hidden');
+    }
+}
+checkAuth(); // Verifica a autenticação assim que o script é carregado
+
 // --- ATENÇÃO ---
 // As variáveis __firebase_config, __app_id e __initial_auth_token são injetadas pelo ambiente do Canvas.
 // Se você for hospedar este projeto fora do Canvas, precisará substituir os valores abaixo
@@ -35,9 +45,16 @@ const closeModalButton = document.getElementById('close-modal-button');
 const printButton = document.getElementById('print-button');
 const modalStatusUpdate = document.getElementById('modal-status-update');
 const updateStatusButton = document.getElementById('update-status-button');
+const logoutButton = document.getElementById('logout-button');
 
 let allServiceOrders = []; // Cache local para a busca
 let currentEditingOrderId = null; // ID da OS sendo editada no modal
+
+// Função de Logout
+logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = 'login.html';
+});
 
 // Função para obter a cor do status
 const getStatusColor = (status) => {
@@ -102,10 +119,10 @@ async function getNextOsNumber() {
     }
 }
 
-// Autenticação e carregamento inicial
+// Autenticação e carregamento inicial do Firebase
 onAuthStateChanged(auth, user => {
     if (user) {
-        console.log("Usuário autenticado:", user.uid);
+        console.log("Usuário autenticado no Firebase:", user.uid);
         const osCollectionRef = collection(db, `artifacts/${appId}/public/data/service_orders`);
         onSnapshot(query(osCollectionRef), (snapshot) => {
             allServiceOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -113,7 +130,7 @@ onAuthStateChanged(auth, user => {
         });
         getNextOsNumber();
     } else {
-        console.log("Usuário não autenticado, tentando login...");
+        console.log("Usuário não autenticado no Firebase, tentando login...");
          if (initialAuthToken) {
             signInWithCustomToken(auth, initialAuthToken).catch(error => console.error("Erro no login com token:", error));
         } else {
@@ -136,10 +153,12 @@ osForm.addEventListener('submit', async (e) => {
             clientName: document.getElementById('client-name').value,
             clientPhone: document.getElementById('client-phone').value,
             clientAddress: document.getElementById('client-address').value,
+            customerOrigin: document.querySelector('input[name="customer-origin"]:checked')?.value || 'Não informado',
             object: document.querySelector('input[name="object"]:checked')?.value || 'Não especificado',
             deviceModel: document.getElementById('device-model').value,
             deviceSerial: document.getElementById('device-serial').value,
             deviceDefect: document.getElementById('device-defect').value,
+            deviceLocation: document.getElementById('device-location').value,
             accessories: document.querySelector('input[name="accessories"]:checked')?.value || 'Não',
             condition: document.querySelector('input[name="condition"]:checked')?.value || 'Não especificado',
             totalValue: document.getElementById('total-value').value,
@@ -165,7 +184,6 @@ osTableBody.addEventListener('click', async (e) => {
     const docRef = doc(db, `artifacts/${appId}/public/data/service_orders`, id);
 
     if (action === 'delete') {
-        // Usando um modal customizado em vez de window.confirm
         if (confirm('Tem certeza que deseja excluir esta ordem de serviço?')) {
             try {
                 await deleteDoc(docRef);
@@ -201,6 +219,7 @@ function showModal(orderData, orderId) {
             <p><span class="font-bold">Cliente:</span> ${orderData.clientName}</p>
             <p><span class="font-bold">Telefone:</span> ${orderData.clientPhone}</p>
             <p class="col-span-2"><span class="font-bold">Endereço:</span> ${orderData.clientAddress || 'Não informado'}</p>
+            <p class="col-span-2"><span class="font-bold">Origem do Cliente:</span> ${orderData.customerOrigin || 'Não informada'}</p>
         </div>
         <div class="border-t mt-4 pt-4">
             <p><span class="font-bold">Objeto:</span> ${orderData.object}</p>
@@ -209,6 +228,7 @@ function showModal(orderData, orderId) {
             <p><span class="font-bold">Defeito:</span> ${orderData.deviceDefect}</p>
             <p><span class="font-bold">Acessórios:</span> ${orderData.accessories}</p>
             <p><span class="font-bold">Estado do Aparelho:</span> ${orderData.condition}</p>
+            <p><span class="font-bold">Localização do Aparelho:</span> ${orderData.deviceLocation || 'Não informada'}</p>
         </div>
         <div class="border-t mt-4 pt-4 text-right">
             <p><span class="font-bold">Valor Total:</span> R$ ${parseFloat(orderData.totalValue || 0).toFixed(2)}</p>

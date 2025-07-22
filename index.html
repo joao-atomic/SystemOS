@@ -19,173 +19,191 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <!-- Cabeçalho -->
-        <header class="bg-white shadow-md rounded-lg p-6 mb-8 text-center">
-            <h1 class="text-3xl font-bold text-gray-900">ELETRÔNICA J. OLIVEIRA</h1>
-            <p class="text-md text-gray-600 mt-1">ASSISTÊNCIA TÉCNICA - CONSERTOS DE TV, LCD, LED, NOTEBOOKS, MICROONDAS</p>
-            <p class="text-sm text-gray-500 mt-2">
-                <i class="fas fa-map-marker-alt"></i> Av. Imperador, 5545 - S. Miguel Pta. (Próx. à Av. Pires do Rio, em frente à Casa Lotérica)
-            </p>
-            <p class="text-sm text-gray-500">
-                <i class="fas fa-phone"></i> (11) 2057-4296 | <i class="fab fa-whatsapp"></i> (11) 95885-5606 | <i class="fab fa-whatsapp"></i> (11) 95199-0469
-                <a href="https://www.instagram.com/eletronicajoliveira?igsh=MW1oY2FzdTFpNXZs" class="ml-2 text-blue-600 hover:underline"><i class="fab fa-instagram"></i> eletronicaljoliveira</a>
-            </p>
-        </header>
+    <div id="app-container" class="hidden">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+            <!-- Cabeçalho -->
+            <header class="bg-white shadow-md rounded-lg p-6 mb-8 text-center relative">
+                <h1 class="text-3xl font-bold text-gray-900">ELETRÔNICA J. OLIVEIRA</h1>
+                <p class="text-md text-gray-600 mt-1">ASSISTÊNCIA TÉCNICA - CONSERTOS DE TV, LCD, LED, NOTEBOOKS, MICROONDAS</p>
+                <p class="text-sm text-gray-500 mt-2">
+                    <i class="fas fa-map-marker-alt"></i> Av. Imperador, 5545 - S. Miguel Pta. (Próx. à Av. Pires do Rio, em frente à Casa Lotérica)
+                </p>
+                <p class="text-sm text-gray-500">
+                    <i class="fas fa-phone"></i> (11) 2057-4296 | <i class="fab fa-whatsapp"></i> (11) 95885-5606 | <i class="fab fa-whatsapp"></i> (11) 95199-0469
+                    <a href="https://www.instagram.com/eletronicajoliveira?igsh=MW1oY2FzdTFpNXZs" class="ml-2 text-blue-600 hover:underline"><i class="fab fa-instagram"></i> eletronicaljoliveira</a>
+                </p>
+                 <button id="logout-button" class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Sair
+                </button>
+            </header>
 
-        <!-- Formulário de Nova Ordem de Serviço -->
-        <div class="bg-white shadow-md rounded-lg p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b pb-4">Nova Ordem de Serviço</h2>
-            <form id="os-form">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                    <div>
-                        <label for="os-type" class="block text-sm font-medium text-gray-700">Tipo</label>
-                        <select id="os-type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                            <option>Orçamento</option>
-                            <option>O.S.</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="os-number" class="block text-sm font-medium text-gray-700">Nº O.S.</label>
-                        <input type="text" id="os-number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100" readonly>
-                    </div>
-                    <div>
-                        <label for="entry-date" class="block text-sm font-medium text-gray-700">Data da Entrada</label>
-                        <input type="date" id="entry-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    </div>
-                     <div>
-                        <label for="order-status" class="block text-sm font-medium text-gray-700">Status</label>
-                        <select id="order-status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                            <option value="Aberta">Aberta</option>
-                            <option value="Aguardando Aprovação">Aguardando Aprovação</option>
-                            <option value="Aprovado">Aprovado</option>
-                            <option value="Em Andamento">Em Andamento</option>
-                            <option value="Concluído">Concluído</option>
-                            <option value="Entregue">Entregue</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Informações do Cliente -->
-                <div class="border-t pt-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Informações do Cliente</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Formulário de Nova Ordem de Serviço -->
+            <div class="bg-white shadow-md rounded-lg p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b pb-4">Nova Ordem de Serviço</h2>
+                <form id="os-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                         <div>
-                            <label for="client-name" class="block text-sm font-medium text-gray-700">Cliente</label>
-                            <input type="text" id="client-name" placeholder="Nome completo do cliente" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                            <label for="os-type" class="block text-sm font-medium text-gray-700">Tipo</label>
+                            <select id="os-type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option>Orçamento</option>
+                                <option>O.S.</option>
+                            </select>
                         </div>
                         <div>
-                            <label for="client-phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-                            <input type="tel" id="client-phone" placeholder="(11) 99999-9999" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="client-address" class="block text-sm font-medium text-gray-700">Endereço</label>
-                            <input type="text" id="client-address" placeholder="Rua, Número, Bairro, Cidade" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Informações do Aparelho -->
-                <div class="border-t pt-6 mt-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Informações do Aparelho</h3>
-                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Objeto</label>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="AOC" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>AOC</span></label>
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="CCE" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>CCE</span></label>
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="H-BUSTER" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>H-BUSTER</span></label>
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="LG" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>LG</span></label>
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PANASONIC" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>PANASONIC</span></label>
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PHILCO" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>PHILCO</span></label>
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PHILIPS" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>PHILIPS</span></label>
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SAMSUNG" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>SAMSUNG</span></label>
-                            <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SONY" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>SONY</span></label>
-                             <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SIT/SEMP" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>SIT/SEMP</span></label>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="device-model" class="block text-sm font-medium text-gray-700">Modelo</label>
-                            <input type="text" id="device-model" placeholder="Ex: UN55TU8000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                            <label for="os-number" class="block text-sm font-medium text-gray-700">Nº O.S.</label>
+                            <input type="text" id="os-number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100" readonly>
                         </div>
                         <div>
-                            <label for="device-serial" class="block text-sm font-medium text-gray-700">Nº de Série</label>
-                            <input type="text" id="device-serial" placeholder="Número de série do aparelho" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="device-defect" class="block text-sm font-medium text-gray-700">Defeito Reclamado</label>
-                            <textarea id="device-defect" rows="3" placeholder="Descrição do defeito informado pelo cliente" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required></textarea>
+                            <label for="entry-date" class="block text-sm font-medium text-gray-700">Data da Entrada</label>
+                            <input type="date" id="entry-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         </div>
                          <div>
-                            <label class="block text-sm font-medium text-gray-700">Acessórios</label>
-                            <div class="mt-2 flex items-center space-x-6">
-                                <label class="flex items-center"><input type="radio" name="accessories" value="Não" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" checked> <span class="ml-2">Não</span></label>
-                                <label class="flex items-center"><input type="radio" name="accessories" value="Sim" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Sim</span></label>
-                            </div>
+                            <label for="order-status" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select id="order-status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option value="Aberta">Aberta</option>
+                                <option value="Aguardando Aprovação">Aguardando Aprovação</option>
+                                <option value="Aprovado">Aprovado</option>
+                                <option value="Em Andamento">Em Andamento</option>
+                                <option value="Concluído">Concluído</option>
+                                <option value="Entregue">Entregue</option>
+                            </select>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Estado do Aparelho</label>
-                             <div class="mt-2 flex items-center space-x-6">
-                                <label class="flex items-center"><input type="radio" name="condition" value="Bom" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" checked> <span class="ml-2">Bom</span></label>
-                                <label class="flex items-center"><input type="radio" name="condition" value="Regular" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Regular</span></label>
-                                <label class="flex items-center"><input type="radio" name="condition" value="Ruim" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Ruim</span></label>
-                                <label class="flex items-center"><input type="radio" name="condition" value="Riscado" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Riscado</span></label>
+                    </div>
+
+                    <!-- Informações do Cliente -->
+                    <div class="border-t pt-6">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Informações do Cliente</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="client-name" class="block text-sm font-medium text-gray-700">Cliente</label>
+                                <input type="text" id="client-name" placeholder="Nome completo do cliente" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                            </div>
+                            <div>
+                                <label for="client-phone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                                <input type="tel" id="client-phone" placeholder="(11) 99999-9999" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="client-address" class="block text-sm font-medium text-gray-700">Endereço</label>
+                                <input type="text" id="client-address" placeholder="Rua, Número, Bairro, Cidade" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700">Origem do Cliente</label>
+                                <div class="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2">
+                                    <label class="flex items-center"><input type="radio" name="customer-origin" value="Instagram" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Instagram</span></label>
+                                    <label class="flex items-center"><input type="radio" name="customer-origin" value="Google" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Google</span></label>
+                                    <label class="flex items-center"><input type="radio" name="customer-origin" value="Recomendação" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Recomendação</span></label>
+                                    <label class="flex items-center"><input type="radio" name="customer-origin" value="Outro" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Outro</span></label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Valores -->
-                <div class="border-t pt-6 mt-6">
-                     <h3 class="text-lg font-semibold mb-4 text-gray-800">Valores</h3>
-                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                         <div>
-                            <label for="total-value" class="block text-sm font-medium text-gray-700">Valor Total R$</label>
-                            <input type="number" step="0.01" id="total-value" placeholder="0.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="down-payment" class="block text-sm font-medium text-gray-700">Sinal R$</label>
-                            <input type="number" step="0.01" id="down-payment" placeholder="0.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        </div>
-                     </div>
-                </div>
 
-                <div class="mt-8 flex justify-end">
-                    <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <i class="fas fa-save mr-2"></i> Salvar Ordem de Serviço
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <!-- Informações do Aparelho -->
+                    <div class="border-t pt-6 mt-6">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Informações do Aparelho</h3>
+                         <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Objeto</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="AOC" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>AOC</span></label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="CCE" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>CCE</span></label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="H-BUSTER" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>H-BUSTER</span></label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="LG" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>LG</span></label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PANASONIC" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>PANASONIC</span></label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PHILCO" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>PHILCO</span></label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PHILIPS" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>PHILIPS</span></label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SAMSUNG" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>SAMSUNG</span></label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SONY" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>SONY</span></label>
+                                 <label class="flex items-center space-x-2 p-2 border rounded-md hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SIT/SEMP" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"><span>SIT/SEMP</span></label>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="device-model" class="block text-sm font-medium text-gray-700">Modelo</label>
+                                <input type="text" id="device-model" placeholder="Ex: UN55TU8000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                            </div>
+                            <div>
+                                <label for="device-serial" class="block text-sm font-medium text-gray-700">Nº de Série</label>
+                                <input type="text" id="device-serial" placeholder="Número de série do aparelho" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="device-defect" class="block text-sm font-medium text-gray-700">Defeito Reclamado</label>
+                                <textarea id="device-defect" rows="3" placeholder="Descrição do defeito informado pelo cliente" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required></textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="device-location" class="block text-sm font-medium text-gray-700">Localização do Aparelho</label>
+                                <input type="text" id="device-location" placeholder="Ex: Bancada 1, Prateleira 5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700">Acessórios</label>
+                                <div class="mt-2 flex items-center space-x-6">
+                                    <label class="flex items-center"><input type="radio" name="accessories" value="Não" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" checked> <span class="ml-2">Não</span></label>
+                                    <label class="flex items-center"><input type="radio" name="accessories" value="Sim" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Sim</span></label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Estado do Aparelho</label>
+                                 <div class="mt-2 flex items-center space-x-6">
+                                    <label class="flex items-center"><input type="radio" name="condition" value="Bom" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" checked> <span class="ml-2">Bom</span></label>
+                                    <label class="flex items-center"><input type="radio" name="condition" value="Regular" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Regular</span></label>
+                                    <label class="flex items-center"><input type="radio" name="condition" value="Ruim" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Ruim</span></label>
+                                    <label class="flex items-center"><input type="radio" name="condition" value="Riscado" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"> <span class="ml-2">Riscado</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Valores -->
+                    <div class="border-t pt-6 mt-6">
+                         <h3 class="text-lg font-semibold mb-4 text-gray-800">Valores</h3>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div>
+                                <label for="total-value" class="block text-sm font-medium text-gray-700">Valor Total R$</label>
+                                <input type="number" step="0.01" id="total-value" placeholder="0.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="down-payment" class="block text-sm font-medium text-gray-700">Sinal R$</label>
+                                <input type="number" step="0.01" id="down-payment" placeholder="0.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            </div>
+                         </div>
+                    </div>
 
-        <!-- Tabela de Ordens de Serviço -->
-        <div class="bg-white shadow-md rounded-lg p-8">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b pb-4">Ordens de Serviço Cadastradas</h2>
-             <div class="mb-4">
-                <input type="text" id="search-input" placeholder="Pesquisar por cliente, O.S. ou aparelho..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3">
+                    <div class="mt-8 flex justify-end">
+                        <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <i class="fas fa-save mr-2"></i> Salvar Ordem de Serviço
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">O.S.</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aparelho</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="os-table-body" class="bg-white divide-y divide-gray-200">
-                        <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
-                    </tbody>
-                </table>
+
+            <!-- Tabela de Ordens de Serviço -->
+            <div class="bg-white shadow-md rounded-lg p-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b pb-4">Ordens de Serviço Cadastradas</h2>
+                 <div class="mb-4">
+                    <input type="text" id="search-input" placeholder="Pesquisar por cliente, O.S. ou aparelho..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3">
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">O.S.</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aparelho</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="os-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            
+            <footer class="text-center mt-8">
+                <p class="text-sm font-semibold text-red-600">OBS.: O aparelho não retirado no prazo de 90 dias, será vendido para pagamento do conserto.</p>
+            </footer>
         </div>
-        
-        <footer class="text-center mt-8">
-            <p class="text-sm font-semibold text-red-600">OBS.: O aparelho não retirado no prazo de 90 dias, será vendido para pagamento do conserto.</p>
-        </footer>
     </div>
     
     <!-- Modal de Visualização -->
