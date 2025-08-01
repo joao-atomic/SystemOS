@@ -53,12 +53,12 @@
                             <label for="os-type" class="block text-sm font-medium text-gray-700">Tipo</label>
                             <select id="os-type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 <option>Orçamento</option>
-                                <option>O.S.</option>
+                                <option>Ordem de Serviço</option>
                             </select>
                         </div>
                         <div>
                             <label for="os-number" class="block text-sm font-medium text-gray-700">Nº O.S.</label>
-                            <input type="text" id="os-number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100" readonly>
+                            <input type="text" id="os-number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100">
                         </div>
                         <div>
                             <label for="entry-date" class="block text-sm font-medium text-gray-700">Data da Entrada</label>
@@ -189,6 +189,7 @@
     </div>
 
     <!-- Custom JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="/backend/src/script.js"></script>
 </body>
 </html>
