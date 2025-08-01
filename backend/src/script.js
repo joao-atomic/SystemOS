@@ -6,7 +6,7 @@ import { getFirestore, doc, addDoc, collection, runTransaction, serverTimestamp 
 // --- Lógica de Proteção de Página ---
 function checkAuth() {
     if (localStorage.getItem('isLoggedIn') !== 'true') {
-        window.location.href = 'login.html';
+        window.location.href = '/frontend/src/pages/login.html';
     } else {
         // Apenas mostra o container se o elemento existir na página
         const appContainer = document.getElementById('app-container');
@@ -17,8 +17,139 @@ function checkAuth() {
 }
 checkAuth(); // Verifica a autenticação assim que o script é carregado
 
+
 // --- ATENÇÃO ---
-// As variáveis __firebase_config, __app_id e __initial_auth_token são injetadas pelo ambiente.
+// --- Lógica Principal da Aplicação com localStorage ---
+// document.addEventListener('DOMContentLoaded', () => {
+    
+//     // Só executa o código se estivermos na página principal (index.html)
+//     const osForm = document.getElementById('os-form');
+//     if (!osForm) return; // Se não encontrar o formulário, para a execução
+
+//     // Elementos do DOM da página principal
+//     const osNumberInput = document.getElementById('os-number');
+//     const entryDateInput = document.getElementById('entry-date');
+//     const logoutButton = document.getElementById('logout-button');
+//     const submitButton = osForm.querySelector('button[type="submit"]');
+
+//     // Função para gerenciar o estado do botão de salvar
+//     const setSubmitButtonState = (state, message) => {
+//         if (state === 'loading') {
+//             submitButton.disabled = true;
+//             submitButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> ${message}`;
+//         } else if (state === 'ready') {
+//             submitButton.disabled = false;
+//             submitButton.innerHTML = `<i class="fas fa-save mr-2"></i> ${message}`;
+//         } else if (state === 'error') {
+//             submitButton.disabled = true;
+//             submitButton.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i> ${message}`;
+//         }
+//     };
+
+//     // Inicia a página com o botão em estado de carregamento
+//     setSubmitButtonState('loading', 'Carregando...');
+
+//     // Define a data atual no campo de data
+//     entryDateInput.value = new Date().toISOString().split('T')[0];
+
+//     // Função de Logout
+//     logoutButton.addEventListener('click', () => {
+//         localStorage.removeItem('isLoggedIn');
+//         window.location.href = 'login.html';
+//     });
+
+//     // Função para obter o próximo número de OS do localStorage, baseada nos dados existentes
+//     function getNextOsNumber() {
+//         try {
+//             const serviceOrders = JSON.parse(localStorage.getItem('serviceOrders')) || [];
+//             let nextNumber;
+
+//             if (serviceOrders.length === 0) {
+//                 // Se não houver ordens, começa com o número base.
+//                 nextNumber = 23739;
+//             } else {
+//                 // Encontra o maior número de O.S. existente e adiciona 1.
+//                 const maxOsNumber = serviceOrders.reduce((max, order) => 
+//                     order.osNumber > max ? order.osNumber : max, 0);
+//                 nextNumber = maxOsNumber + 1;
+//             }
+            
+//             osNumberInput.value = nextNumber;
+            
+//             // Habilita o botão de salvar, pois tudo carregou corretamente
+//             setSubmitButtonState('ready', 'Salvar Ordem de Serviço');
+//         } catch (error) {
+//             console.error("Erro ao obter número da O.S.:", error);
+//             setSubmitButtonState('error', 'Erro ao Carregar');
+//         }
+//     }
+
+//     // Salvar nova OS no localStorage
+//     osForm.addEventListener('submit', (e) => {
+//         e.preventDefault();
+        
+//         if (submitButton.disabled) {
+//             alert("Aguarde o sistema carregar completamente antes de salvar.");
+//             return;
+//         }
+
+//         try {
+//             setSubmitButtonState('loading', 'Salvando...');
+
+//             // 1. Pega as ordens de serviço existentes no localStorage
+//             let serviceOrders = JSON.parse(localStorage.getItem('serviceOrders')) || [];
+            
+//             // 2. Pega o número da O.S. atual do campo do formulário
+//             let currentOsNumber = parseInt(osNumberInput.value);
+
+//             // 3. Monta o objeto da nova ordem de serviço
+//             const newOrder = {
+//                 id: Date.now(), // Usa um timestamp como ID único
+//                 osType: document.getElementById('os-type').value,
+//                 osNumber: currentOsNumber,
+//                 entryDate: document.getElementById('entry-date').value,
+//                 status: document.getElementById('order-status').value,
+//                 clientName: document.getElementById('client-name').value,
+//                 clientPhone: document.getElementById('client-phone').value,
+//                 clientAddress: document.getElementById('client-address').value,
+//                 customerOrigin: document.querySelector('input[name="customer-origin"]:checked')?.value || 'Não informado',
+//                 object: document.querySelector('input[name="object"]:checked')?.value || 'Não especificado',
+//                 deviceModel: document.getElementById('device-model').value,
+//                 deviceSerial: document.getElementById('device-serial').value,
+//                 deviceDefect: document.getElementById('device-defect').value,
+//                 deviceLocation: document.getElementById('device-location').value,
+//                 accessories: document.querySelector('input[name="accessories"]:checked')?.value || 'Não',
+//                 condition: document.querySelector('input[name="condition"]:checked')?.value || 'Não especificado',
+//                 totalValue: document.getElementById('total-value').value,
+//                 downPayment: document.getElementById('down-payment').value,
+//                 createdAt: new Date().toISOString()
+//             };
+
+//             // 4. Adiciona a nova ordem no início da lista
+//             serviceOrders.unshift(newOrder);
+
+//             // 5. Salva a lista atualizada de volta no localStorage
+//             localStorage.setItem('serviceOrders', JSON.stringify(serviceOrders));
+            
+//             // 6. O contador separado não é mais necessário
+
+//             alert("Ordem de Serviço salva com sucesso!");
+//             osForm.reset();
+//             entryDateInput.value = new Date().toISOString().split('T')[0];
+//             getNextOsNumber(); // Pega o próximo número e reabilita o botão para o estado 'pronto'
+
+//         } catch (error) {
+//             console.error("Falha ao salvar a Ordem de Serviço:", error);
+//             alert("Ocorreu um erro ao salvar. Verifique o console para mais detalhes.");
+//             setSubmitButtonState('ready', 'Salvar Ordem de Serviço'); // Reabilita o botão em caso de erro
+//         }
+//     });
+
+//     // Carregamento inicial
+//     getNextOsNumber();
+// });
+
+// --- Configuração do Firebase e Variáveis Globais ---
 const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { 
     apiKey: "SEU_API_KEY", 
     authDomain: "SEU_AUTH_DOMAIN", 
@@ -61,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Função de Logout
     logoutButton.addEventListener('click', () => {
         localStorage.removeItem('isLoggedIn');
-        window.location.href = 'login.html';
+        window.location.href = '/frontend/src/pages/login.html';
     });
 
     // Função para obter o próximo número de OS
