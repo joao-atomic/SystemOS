@@ -34,8 +34,8 @@ function handleMobileMenu() {
 
 // --- Conexão com Supabase ---
 // Conexão com Supabase
-const SUPABASE_URL = 'xxxxxxxxxxxxxxxxxxx'; 
-const SUPABASE_ANON_KEY = 'xxxxxxxxxxxxxxxxxx';
+const SUPABASE_URL = 'https://dolmskfxulciscwrpfes.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvbG1za2Z4dWxjaXNjd3JwZmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNzYxOTQsImV4cCI6MjA2OTY1MjE5NH0.QB9j1Whd6ljxbMptXoAYlLbCm0WgmsD5PaFdPfBFH_E';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // --- Lógica Principal da Aplicação ---
@@ -93,13 +93,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return selected ? selected.value : '';
     }
 
+    // --- Função para Gerar Número de OS
     function gerarNumeroOS() {
+        // Seleciona o radio button específico de "O.S."
+        const osRadio = document.querySelector('input[name="os-type"][value="O.S."]');
+        
+        // Define o prefixo padrão como 'OR'
+        let prefix = 'OR';
+        
+        // Se o radio button de "O.S." existir e estiver marcado, muda o prefixo para 'OS'
+        if (osRadio && osRadio.checked) {
+            prefix = 'OS';
+        }
+
         const agora = new Date();
         const ano = agora.getFullYear().toString().slice(-2);
         const mes = String(agora.getMonth() + 1).padStart(2, '0');
         const dia = String(agora.getDate()).padStart(2, '0');
         const aleatorio = Math.floor(1000 + Math.random() * 9000);
-        return `OS-${ano}${mes}${dia}-${aleatorio}`;
+
+        return `${prefix}-${ano}${mes}${dia}-${aleatorio}`;
     }
 
     const setSubmitButtonState = (state, message) => {
@@ -122,14 +135,20 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'login.html';
     });
 
+    // --- Event listener para atualizar o número da OS dinamicamente ---
+    const osTypeRadios = document.querySelectorAll('input[name="os-type"]');
+    osTypeRadios.forEach(radio => {
+        radio.addEventListener('click', () => {
+            osNumberInput.value = gerarNumeroOS();
+        });
+    });
+
     // --- Lógica de Envio do Formulário ---
     osForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (submitButton.disabled) return;
 
-        if (!osNumberInput.value.trim()) {
-            osNumberInput.value = gerarNumeroOS();
-        }
+        osNumberInput.value = gerarNumeroOS();
 
         const dados = {
             tipo: getRadioValue('os-type'), // Corrigido para pegar o valor do radio
