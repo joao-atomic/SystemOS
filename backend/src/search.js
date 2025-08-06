@@ -9,10 +9,11 @@ function checkAuth() {
 checkAuth();
 
 // --- ATENÇÃO ---
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+// Conexão com Supabase
+const SUPABASE_URL = 'xxxxxxxxxxxxxxxxxxx'; 
+const SUPABASE_ANON_KEY = 'xxxxxxxxxxxxxxxxxx';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Elementos do DOM
 const brandInput = document.getElementById('filter-brand');

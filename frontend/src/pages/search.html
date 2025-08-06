@@ -3,72 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Busca de Ordens de Serviço</title>
+    <title>Pesquisar - Sistema de Ordens de Serviço</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link rel="stylesheet" href="/frontend/src/styles/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body>
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <header class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Pesquisar Ordens de Serviço</h1>
-            <a href="/frontend/public/index.html" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm">
-                <i class="fas fa-arrow-left mr-1"></i> Voltar
-            </a>
-        </header>
+    <div id="app-container" class="main-layout hidden">
+        <!-- Sidebar de Navegação -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-tv"></i> J. OLIVEIRA</h1>
+                <p>Sistema de O.S.</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/frontend/public/index.html"><i class="fas fa-plus-circle"></i> Nova O.S.</a>
+                <a href="/frontend/src/pages/search.html" class="active"><i class="fas fa-search"></i> Pesquisar</a>
+                <a href="/frontend/src/pages/products.html"><i class="fas fa-box-open"></i> Estoque</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-button" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </aside>
 
-        <!-- Filtros de Busca -->
-        <div class="bg-white shadow-md rounded-lg p-8 mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Filtros específicos -->
-                <div>
-                    <label for="filter-brand" class="block text-sm font-medium text-gray-700">Marca da TV</label>
-                    <input type="text" id="filter-brand" placeholder="Ex: Samsung" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+        <!-- Área de Conteúdo Principal -->
+        <main class="content-area">
+            <div class="card mb-8">
+                <div class="card-header">
+                    <h2>Filtros de Busca</h2>
                 </div>
-                <div>
-                    <label for="filter-model" class="block text-sm font-medium text-gray-700">Modelo da TV</label>
-                    <input type="text" id="filter-model" placeholder="Ex: QN55Q80A" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-                </div>
-                <div>
-                    <label for="filter-defect" class="block text-sm font-medium text-gray-700">Defeito</label>
-                    <input type="text" id="filter-defect" placeholder="Ex: Não liga" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-                </div>
-                <!-- Busca Geral -->
-                <div class="md:col-span-2 lg:col-span-1">
-                    <label for="filter-general" class="block text-sm font-medium text-gray-700">Busca Geral</label>
-                    <input type="text" id="filter-general" placeholder="Nº da O.S. ou Cliente" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div>
+                        <label for="filter-brand">Marca da TV</label>
+                        <input type="text" id="filter-brand" placeholder="Ex: Samsung" class="w-full">
+                    </div>
+                    <div>
+                        <label for="filter-model">Modelo da TV</label>
+                        <input type="text" id="filter-model" placeholder="Ex: QN55Q80A" class="w-full">
+                    </div>
+                    <div>
+                        <label for="filter-defect">Defeito</label>
+                        <input type="text" id="filter-defect" placeholder="Ex: Não liga" class="w-full">
+                    </div>
+                    <div>
+                        <label for="filter-general">Busca Geral</label>
+                        <input type="text" id="filter-general" placeholder="Nº da O.S. ou Cliente" class="w-full">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Tabela de Resultados -->
-        <div class="bg-white shadow-md rounded-lg p-8">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b pb-4">Resultados da Busca</h2>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nº O.S.</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entrada</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marca</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Defeito</th>
-                        </tr>
-                    </thead>
-                    <tbody id="results-table-body" class="bg-white divide-y divide-gray-200">
-                        <!-- Resultados serão inseridos aqui -->
-                    </tbody>
-                </table>
-                 <p id="no-results-message" class="text-center py-8 text-gray-500 hidden">Nenhum resultado encontrado.</p>
+            <div class="card">
+                <div class="card-header">
+                    <h2>Resultados da Busca</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Nº O.S.</th>
+                                <th>Entrada</th>
+                                <th>Status</th>
+                                <th>Cliente</th>
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>Defeito</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-table-body">
+                            <!-- Resultados serão inseridos aqui -->
+                        </tbody>
+                    </table>
+                    <p id="no-results-message" class="text-center py-8 text-gray-500 hidden">Nenhum resultado encontrado.</p>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <script type="module" src="/backend/src/search.js"></script>
+    <script type="module" src="/backend/src/script.js"></script>
 </body>
 </html>
