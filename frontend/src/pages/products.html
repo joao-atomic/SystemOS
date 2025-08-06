@@ -1,68 +1,158 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estoque - Sistema de Ordens de Serviço</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-    <link rel="stylesheet" href="/frontend/src/styles/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estoque - Sistema de Ordens de Serviço</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+  <link rel="stylesheet" href="/frontend/src/styles/style.css">
 </head>
 <body>
 
-    <div id="app-container" class="main-layout hidden">
-        <!-- Overlay para fechar o menu no mobile -->
-        <div class="overlay"></div>
-        
-        <!-- Sidebar de Navegação -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h1><i class="fas fa-tv"></i> J. OLIVEIRA</h1>
-                <p>Sistema de O.S.</p>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="/frontend/public/index.html"><i class="fas fa-plus-circle"></i> Nova O.S.</a>
-                <a href="/frontend/src/pages/search.html"><i class="fas fa-search"></i> Pesquisar</a>
-                <a href="/frontend/src/pages/products.html" class="active"><i class="fas fa-box-open"></i> Estoque</a>
-            </nav>
-            <div class="sidebar-footer">
-                <button id="logout-button" class="btn btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> Sair
-                </button>
-            </div>
-        </aside>
+  <div id="app-container" class="main-layout hidden">
+    <div class="overlay"></div>
 
-        <!-- Área de Conteúdo Principal -->
-        <main class="content-area">
-            <div class="card mb-8">
-                <div class="card-header">
-                    <!-- Botão Hamburger para abrir o menu no mobile -->
-                    <button class="hamburger-btn"><i class="fas fa-bars"></i></button>
-                    <h2 id="form-title">Adicionar Novo Produto</h2>
-                </div>
-                <form id="product-form">
-                    <!-- Campos do formulário de produto aqui -->
-                </form>
-            </div>
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1><i class="fas fa-tv"></i> J. OLIVEIRA</h1>
+        <p>Sistema de O.S.</p>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/frontend/public/index.html"><i class="fas fa-plus-circle"></i> Nova O.S.</a>
+        <a href="/frontend/src/pages/search.html"><i class="fas fa-search"></i> Pesquisar</a>
+        <a href="/frontend/src/pages/products.html" class="active"><i class="fas fa-box-open"></i> Estoque</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="logout-button" class="btn btn-logout">
+          <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+      </div>
+    </aside>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>Produtos em Estoque</h2>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="results-table">
-                        <!-- Cabeçalho da tabela aqui -->
-                        <tbody id="products-table-body">
-                            <!-- Produtos serão inseridos aqui -->
-                        </tbody>
-                    </table>
-                    <p id="no-products-message" class="text-center py-8 text-gray-500 hidden">Nenhum produto cadastrado.</p>
-                </div>
-            </div>
-        </main>
-    </div>
+    <main class="content-area">
+      <!-- Formulário de Produto -->
+      <div class="card mb-8">
+        <div class="card-header">
+          <button class="hamburger-btn"><i class="fas fa-bars"></i></button>
+          <h2 id="form-title">Adicionar Novo Produto</h2>
+        </div>
+        <form id="product-form">
+          <fieldset class="mb-6">
+          <legend class="font-semibold mb-2">Tipo de Produto</legend>
+          <div class="flex items-center gap-6 pt-2">
+            <label class="inline-flex items-center space-x-2 cursor-pointer">
+              <input type="radio" name="product-type" value="televisor" checked class="form-radio text-teal-600 focus:ring-teal-500">
+              <span class="text-sm">Televisor</span>
+            </label>
+            <label class="inline-flex items-center space-x-2 cursor-pointer">
+              <input type="radio" name="product-type" value="componente" class="form-radio text-teal-600 focus:ring-teal-500">
+              <span class="text-sm">Componente</span>
+            </label>
+          </div>
+        </fieldset>
 
-    <script type="module" src="/backend/src/products.js"></script>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="product-id" />
+            <div>
+              <label for="product-name">Nome</label>
+              <input type="text" id="product-name" required />
+            </div>
+            <div>
+              <label for="product-sku">SKU</label>
+              <input type="text" id="product-sku" />
+            </div>
+            <div>
+              <label for="product-quantity">Quantidade</label>
+              <input type="number" id="product-quantity" required />
+            </div>
+            <div>
+              <label for="product-cost-price">Preço de Custo</label>
+              <input type="number" step="0.01" id="product-cost-price" />
+            </div>
+            <div>
+              <label for="product-sale-price">Preço de Venda</label>
+              <input type="number" step="0.01" id="product-sale-price" />
+            </div>
+            <div>
+              <label for="product-supplier">Fornecedor</label>
+              <input type="text" id="product-supplier" />
+            </div>
+            <div>
+              <label for="product-location">Localização</label>
+              <input type="text" id="product-location" />
+            </div>
+            <div id="componente-fields" class="hidden">
+              <label for="tipo-componente">Tipo de Componente</label>
+              <input type="text" id="tipo-componente" placeholder="Fonte, LED, etc" />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-4 mt-6">
+            <button type="submit" id="submit-product-button" class="btn btn-primary w-40">
+              <i class="fas fa-save mr-2"></i> Salvar Alterações
+            </button>
+            <button type="button" id="cancel-edit-button" class="btn-cancel-edit hidden w-40">
+              Cancelar Edição
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Filtros de Produtos -->
+      <div class="card mb-8">
+        <div class="card-header">
+          <h2>Filtros de Produtos</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div>
+            <label for="filter-name">Nome</label>
+            <input type="text" id="filter-name" placeholder="Ex: Fonte LED" class="w-full" />
+          </div>
+          <div>
+            <label for="filter-sku">SKU</label>
+            <input type="text" id="filter-sku" placeholder="Ex: 12345" class="w-full" />
+          </div>
+          <div>
+            <label for="filter-type">Tipo</label>
+            <select id="filter-type" class="w-full">
+              <option value="">Todos</option>
+              <option value="televisor">Televisor</option>
+              <option value="componente">Componente</option>
+            </select>
+          </div>
+          <div>
+            <label for="filter-supplier">Fornecedor</label>
+            <input type="text" id="filter-supplier" placeholder="Ex: EletroMais" class="w-full" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Produtos -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Produtos em Estoque</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>SKU</th>
+                <th>Qtd</th>
+                <th>Preço Venda</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="products-table-body"></tbody>
+          </table>
+          <p id="no-products-message" class="text-center py-8 text-gray-500 hidden">Nenhum produto cadastrado.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="/backend/src/products.js"></script>
 </body>
 </html>
