@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logoutButton.addEventListener('click', () => {
         localStorage.removeItem('isLoggedIn');
-        window.location.href = 'login.html';
+        window.location.href = '/frontend/src/pages/login.html';
     });
 
     // --- Event listener para atualizar o número da OS dinamicamente ---

@@ -7,7 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-    <link rel="stylesheet" href="/frontend/src/styles/style.css">
+    <!-- Assumindo que style.css está em um diretório de estilos relativo -->
+    <link rel="stylesheet" href="../styles/style.css">
 </head>
 <body>
 
@@ -22,9 +23,10 @@
                 <p>Sistema de O.S.</p>
             </div>
             <nav class="sidebar-nav">
-                <a href="/frontend/public/index.html"><i class="fas fa-plus-circle"></i> Nova O.S.</a>
-                <a href="/frontend/src/pages/search.html" class="active"><i class="fas fa-search"></i> Pesquisar</a>
-                <a href="/frontend/src/pages/products.html"><i class="fas fa-box-open"></i> Estoque</a>
+                <!-- CORRIGIDO: Caminhos relativos simples -->
+                <a href="../../public/index.html"><i class="fas fa-plus-circle"></i> Nova O.S.</a>
+                <a href="search.html" class="active"><i class="fas fa-search"></i> Pesquisar</a>
+                <a href="products.html"><i class="fas fa-box-open"></i> Estoque</a>
             </nav>
             <div class="sidebar-footer">
                 <button id="logout-button" class="btn btn-logout">
@@ -74,7 +76,7 @@
                                 <th>Cliente</th>
                                 <th>Marca</th>
                                 <th>Modelo</th>
-                                <th>Ações</th> <!-- Nova Coluna -->
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="results-table-body">
@@ -118,6 +120,8 @@
         </div>
     </div>
 
+    <!-- CORRIGIDO: Caminho relativo para o script -->
     <script type="module" src="/backend/src/search.js"></script>
 </body>
 </html>
+>
