@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
     <link rel="stylesheet" href="/frontend/src/styles/style.css">
 </head>
+
 <body>
 
     <div id="app-container" class="main-layout hidden">
@@ -36,29 +38,29 @@
                 <div class="card-header">
                     <h2>Nova Ordem de Serviço</h2>
                 </div>
-                
-                <form id="os-form">
+
+                <form id="os-form" class="space-y-6">
                     <!-- Detalhes da O.S. -->
-                    <fieldset class="mb-6">
-                        <legend class="text-lg font-semibold text-gray-700 mb-4">Detalhes da O.S.</legend>
+                    <fieldset>
+                        <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Detalhes da O.S.</legend>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div>
-                                <label for="os-number">Nº O.S.</label>
-                                <input type="text" id="os-number" readonly>
+                                <label for="os-number" class="block-label">Nº O.S.</label>
+                                <input type="text" id="os-number" readonly class="bg-gray-200">
                             </div>
                             <div>
-                                <label for="entry-date">Data da Entrada</label>
+                                <label for="entry-date" class="block-label">Data da Entrada</label>
                                 <input type="date" id="entry-date">
                             </div>
                             <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900">Tipo</label>
+                                <label class="block-label">Tipo</label>
                                 <div class="flex items-center gap-x-6 pt-2">
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="os-type" value="Orçamento" checked class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Orçamento</span></label>
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="os-type" value="O.S." class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">O.S.</span></label>
+                                    <label><input type="radio" name="os-type" value="Orçamento" checked><span>Orçamento</span></label>
+                                    <label><input type="radio" name="os-type" value="O.S."><span>O.S.</span></label>
                                 </div>
                             </div>
                             <div>
-                                <label for="order-status">Status</label>
+                                <label for="order-status" class="block-label">Status</label>
                                 <select id="order-status">
                                     <option value="Aberta">Aberta</option>
                                     <option value="Aguardando Aprovação">Aguardando Aprovação</option>
@@ -72,113 +74,129 @@
                     </fieldset>
 
                     <!-- Informações do Cliente -->
-                    <fieldset class="mb-6">
-                        <legend class="text-lg font-semibold text-gray-700 mb-4">Informações do Cliente</legend>
+                    <fieldset>
+                        <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Informações do Cliente</legend>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="client-name">Cliente</label>
+                                <label for="client-name" class="block-label">Cliente</label>
                                 <input type="text" id="client-name" placeholder="Nome completo do cliente" required>
                             </div>
                             <div>
-                                <label for="client-phone">Telefone</label>
+                                <label for="client-phone" class="block-label">Telefone</label>
                                 <input type="tel" id="client-phone" placeholder="(11) 99999-9999" required>
                             </div>
                             <div class="md:col-span-2">
-                                <label for="client-address">Endereço</label>
+                                <label for="client-address" class="block-label">Endereço</label>
                                 <input type="text" id="client-address" placeholder="Rua, Número, Bairro, Cidade">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block mb-2">Origem do Cliente</label>
+                                <label class="block-label mb-2">Origem do Cliente</label>
                                 <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="customer-origin" value="Instagram" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Instagram</span></label>
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="customer-origin" value="Google" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Google</span></label>
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="customer-origin" value="Recomendação" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Recomendação</span></label>
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="customer-origin" value="Outro" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Outro</span></label>
+                                    <label><input type="radio" name="customer-origin" value="Instagram"><span>Instagram</span></label>
+                                    <label><input type="radio" name="customer-origin" value="Google"><span>Google</span></label>
+                                    <label><input type="radio" name="customer-origin" value="Recomendação"><span>Recomendação</span></label>
+                                    <label><input type="radio" name="customer-origin" value="Outro"><span>Outro</span></label>
                                 </div>
                             </div>
                         </div>
                     </fieldset>
-                    
+
                     <!-- Informações do Aparelho -->
-                    <fieldset class="mb-6">
-                        <legend class="text-lg font-semibold text-gray-700 mb-4">Informações do Aparelho</legend>
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Marca (Objeto)</label>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="AOC" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">AOC</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="CCE" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">CCE</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="H-BUSTER" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">H-BUSTER</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="LG" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">LG</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PANASONIC" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">PANASONIC</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PHILCO" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">PHILCO</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="PHILIPS" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">PHILIPS</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SAMSUNG" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">SAMSUNG</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SONY" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">SONY</span></label>
-                                <label class="flex items-center p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="object" value="SIT/SEMP" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">SIT/SEMP</span></label>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="device-model">Modelo</label>
-                                <input type="text" id="device-model" placeholder="Ex: UN55TU8000" required>
-                            </div>
-                            <div>
-                                <label for="device-serial">Nº de Série</label>
-                                <input type="text" id="device-serial" placeholder="Número de série do aparelho">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label for="device-defect">Defeito Reclamado</label>
-                                <textarea id="device-defect" rows="3" placeholder="Descrição do defeito" required></textarea>
-                            </div>
-                            <div class="md:col-span-2">
-                                <label for="device-location">Localização do Aparelho</label>
-                                <input type="text" id="device-location" placeholder="Ex: Bancada 1, Prateleira 5">
-                            </div>
-                            <div>
-                                <label class="block mb-2">Acessórios</label>
-                                <div class="flex items-center gap-x-6">
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="accessories" value="Não" checked class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Não</span></label>
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="accessories" value="Sim" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Sim</span></label>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block mb-2">Estado do Aparelho</label>
-                                <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="condition" value="Bom" checked class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Bom</span></label>
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="condition" value="Regular" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Regular</span></label>
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="condition" value="Ruim" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Ruim</span></label>
-                                    <label class="flex items-center cursor-pointer"><input type="radio" name="condition" value="Riscado" class="w-auto h-4 text-teal-600 focus:ring-teal-500"> <span class="ml-2 text-sm">Riscado</span></label>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <!-- Valores -->
                     <fieldset>
-                        <legend class="text-lg font-semibold text-gray-700 mb-4">Valores</legend>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Informações do Aparelho</legend>
+                        <div class="space-y-6">
                             <div>
-                                <label for="total-value">Valor Total R$</label>
-                                <input type="number" step="0.01" id="total-value" placeholder="0.00">
+                                <label class="block-label mb-2">Marca (Objeto)</label>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                    <label class="radio-card"><input type="radio" name="object" value="AOC"><span>AOC</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="CCE"><span>CCE</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="H-BUSTER"><span>H-BUSTER</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="LG"><span>LG</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="PANASONIC"><span>PANASONIC</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="PHILCO"><span>PHILCO</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="PHILIPS"><span>PHILIPS</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="SAMSUNG"><span>SAMSUNG</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="SONY"><span>SONY</span></label>
+                                    <label class="radio-card"><input type="radio" name="object" value="SIT/SEMP"><span>SIT/SEMP</span></label>
+                                </div>
                             </div>
-                            <div>
-                                <label for="down-payment">Sinal R$</label>
-                                <input type="number" step="0.01" id="down-payment" placeholder="0.00">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="device-model" class="block-label">Modelo</label>
+                                    <input type="text" id="device-model" placeholder="Ex: UN55TU8000" required>
+                                </div>
+                                <div>
+                                    <label for="device-serial" class="block-label">Nº de Série</label>
+                                    <input type="text" id="device-serial" placeholder="Número de série do aparelho">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="device-defect" class="block-label">Defeito Reclamado</label>
+                                    <textarea id="device-defect" rows="3" placeholder="Descrição do defeito" required></textarea>
+                                </div>
+                                <div>
+                                    <label for="device-location" class="block-label">Localização do Aparelho</label>
+                                    <input type="text" id="device-location" placeholder="Ex: Bancada 1, Prateleira 5">
+                                </div>
+                            </div>
+
+                            <hr class="form-divider">
+
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label class="block-label">Acessórios</label>
+                                    <div id="accessories-radios" class="radio-group">
+                                        <label><input type="radio" name="accessories" value="Não" checked><span>Não</span></label>
+                                        <label><input type="radio" name="accessories" value="Sim"><span>Sim</span></label>
+                                    </div>
+                                    <div id="accessories-observation-container" class="mt-4 hidden">
+                                        <label for="accessories-observation" class="block-label">Descreva os acessórios:</label>
+                                        <textarea id="accessories-observation" placeholder="Ex: Controle remoto, cabo de força."></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-col has-divider">
+                                    <label class="block-label">Estado do Aparelho</label>
+                                    <div id="condition-radios" class="radio-group">
+                                        <label><input type="radio" name="condition" value="Bom" checked><span>Bom</span></label>
+                                        <label><input type="radio" name="condition" value="Arranhado"><span>Arranhado</span></label>
+                                        <label><input type="radio" name="condition" value="Quebrado"><span>Quebrado</span></label>
+                                        <label><input type="radio" name="condition" value="Risco na tela"><span>Risco na tela</span></label>
+                                    </div>
+                                    <div id="observation-field-container" class="mt-2 hidden">
+                                        <label for="device-observation" class="block-label">Observações sobre o estado:</label>
+                                        <textarea id="device-observation" placeholder="Ex: Arranhões na parte traseira..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="form-divider">
+
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label for="total-value" class="block-label">Valor Total R$</label>
+                                    <input type="number" id="total-value" placeholder="0.00" step="0.01">
+                                </div>
+                                <div class="form-col">
+                                    <label for="down-payment" class="block-label">Sinal R$</label>
+                                    <input type="number" id="down-payment" placeholder="0.00" step="0.01">
+                                </div>
                             </div>
                         </div>
                     </fieldset>
 
-                    <div class="flex justify-end mt-8">
-                        <button type="submit" class="btn btn-primary">
-                            Salvar Ordem de Serviço
-                        </button>
+                    <div class="pt-5">
+                        <div class="flex justify-end">
+                            <button type="submit" id="save-button" class="btn btn-primary">
+                                <i class="fas fa-save mr-2"></i> Salvar Ordem de Serviço
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
         </main>
     </div>
 
-    <!-- Custom Popup Modal -->
+    <!-- Seu Modal Popup aqui -->
     <div id="popup-modal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
@@ -209,7 +227,7 @@
             </div>
         </div>
     </div>
-
     <script type="module" src="/backend/src/script.js"></script>
 </body>
+
 </html>
