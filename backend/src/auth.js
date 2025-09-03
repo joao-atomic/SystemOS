@@ -18,7 +18,7 @@ loginForm.addEventListener('submit', (e) => {
     if (email === ADMIN_USER.email && password === ADMIN_USER.password) {
         // Login bem-sucedido
         localStorage.setItem('isLoggedIn', 'true');
-        window.location.href = '/frontend/public/index.html';
+        window.location.href = '/index.html';
     } else {
         // Credenciais inválidas
         errorMessage.textContent = 'Email ou senha inválidos.';
