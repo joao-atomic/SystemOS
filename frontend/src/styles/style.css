@@ -1,333 +1,258 @@
-/* --- Configuração Base --- */
+/* =========================
+   BASE
+========================= */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f0f2f5;
+  font-family: 'Inter', sans-serif;
+  background-color: #f0f2f5;
+  overflow-x: hidden;
 }
 
-/* --- Layout Principal --- */
-.main-layout {
-    display: flex;
-}
+/* =========================
+   LAYOUT PRINCIPAL
+========================= */
+.main-layout { display: flex; }
 
-/* --- Sidebar (Barra Lateral) --- */
+/* =========================
+   SIDEBAR
+========================= */
 .sidebar {
-    width: 250px;
-    background-color: #1a202c;
-    color: #a0aec0;
-    padding: 1.5rem;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 40;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s ease-in-out;
+  background-color: #1a202c;
+  color: #a0aec0;
+  padding: 1.5rem;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out;
+  width: 18rem; /* ~ w-72 */
+}
+@media (min-width: 1024px) {
+  .sidebar { width: 20rem; } /* ~ w-80 */
 }
 
-.sidebar-header {
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.sidebar-header h1 {
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 1.25rem;
-}
-
-.sidebar-header p {
-    font-size: 0.8rem;
-    color: #718096;
-}
+.sidebar-header { margin-bottom: 2rem; text-align: center; }
+.sidebar-header h1 { color: #fff; font-weight: 700; font-size: 1.25rem; }
+.sidebar-header p { font-size: .8rem; color: #718096; }
 
 .sidebar-nav a {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-    color: #e2e8f0;
+  display: flex; align-items: center;
+  padding: .75rem 1rem; border-radius: .5rem;
+  margin-bottom: .5rem;
+  transition: background-color .2s, color .2s;
+  color: #e2e8f0;
 }
+.sidebar-nav a:hover { background-color: #2d3748; color: #fff; }
+.sidebar-nav a.active { background-color: #00A99D; color: #fff; font-weight: 600; }
+.sidebar-nav a i { margin-right: .75rem; width: 20px; text-align: center; }
 
-.sidebar-nav a:hover {
-    background-color: #2d3748;
-    color: #ffffff;
-}
+.sidebar-footer { margin-top: auto; }
 
-.sidebar-nav a.active {
-    background-color: #00A99D;
-    color: #ffffff;
-    font-weight: 600;
-}
-
-.sidebar-nav a i {
-    margin-right: 0.75rem;
-    width: 20px;
-    text-align: center;
-}
-
-.sidebar-footer {
-    margin-top: auto;
-}
-
-/* --- Área de Conteúdo --- */
-.content-area {
-    width: 100%;
-    padding: 1rem;
-    transition: margin-left 0.3s ease-in-out;
-}
-
-/* --- Botão Hamburger (Menu Mobile) --- */
+/* =========================
+   OVERLAY + HAMBURGER
+========================= */
 .hamburger-btn {
-    display: none;
-    background: none;
-    border: none;
-    color: #1a202c;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 50;
+  background: none; border: none; color: #1a202c;
+  font-size: 1.5rem; cursor: pointer; z-index: 50;
+  display: inline-flex; align-items: center; justify-content: center;
 }
 
-/* --- Overlay (Fundo escuro para o menu mobile) --- */
 .overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 30;
+  display: none; position: fixed; inset: 0;
+  background-color: rgba(0,0,0,.5); z-index: 30;
+}
+/* importante: fora de media query para funcionar também no desktop */
+.overlay.active { display: block; }
+
+/* =========================
+   ÁREA DE CONTEÚDO
+========================= */
+/* não usamos margin-left fixa (evita desalinhamento com a sidebar) */
+.content-area {
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;   /* centraliza horizontalmente */
 }
 
-/* --- Estilos para Telas Maiores (Desktop) --- */
-@media (min-width: 768px) {
-    .content-area {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-        padding: 2rem;
-    }
+/* contêiner central que limita a largura */
+.page-container {
+  width: 100%;
+  max-width: 1200px;         /* limite confortável no desktop */
 }
 
-/* --- Estilos para Telas Menores (Mobile) --- */
-@media (max-width: 767px) {
-    .sidebar {
-        transform: translateX(-100%);
-    }
-
-    .sidebar.open {
-        transform: translateX(0);
-    }
-
-    .hamburger-btn {
-        display: block;
-    }
-
-    .overlay.active {
-        display: block;
-    }
-}
-
-/* --- Componentes (Cards, Formulários, etc.) --- */
+/* =========================
+   COMPONENTES COMUNS
+========================= */
 .card {
-    background-color: #ffffff;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
+  background-color: #fff;
+  border-radius: .75rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1);
+  padding: 1.25rem;
+  width: 100%;
 }
+@media (min-width: 768px){ .card { padding: 1.5rem; } }
 
 .card-header {
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 1rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem; margin-bottom: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center;
 }
-
-.card-header h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1a202c;
-}
+.card-header h2 { font-size: 1.25rem; font-weight: 700; color: #1a202c; }
 
 input, select, textarea {
-    width: 100%;
-    background-color: #f7fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%; background-color: #f7fafc;
+  border: 1px solid #e2e8f0; border-radius: .5rem;
+  padding: .75rem 1rem; transition: border-color .2s, box-shadow .2s;
+  font-size: .95rem;
 }
-
 input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: #00A99D;
-    box-shadow: 0 0 0 2px rgba(0, 169, 157, 0.2);
+  outline: none; border-color: #00A99D;
+  box-shadow: 0 0 0 2px rgba(0,169,157,.2);
+}
+@media (max-width: 380px){
+  input, select, textarea { padding: .6rem .75rem; font-size: .95rem; }
 }
 
 .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    border: none;
-    cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: .75rem 1.5rem; border-radius: .5rem; font-weight: 600;
+  transition: all .2s; border: none; cursor: pointer;
 }
+.btn-primary { background-color: #00A99D; color: #fff; }
+.btn-primary:hover { background-color: #007d74; }
+.btn-primary:disabled { background-color: #a0aec0; cursor: not-allowed; }
 
-.btn-primary {
-    background-color: #00A99D;
-    color: #ffffff;
-}
-
-.btn-primary:hover {
-    background-color: #007d74;
-}
-
-.btn-primary:disabled {
-    background-color: #a0aec0;
-    cursor: not-allowed;
-}
-
-.btn-logout {
-    width: 100%;
-    background-color: #4a5568;
-    color: #e2e8f0;
-}
-
-.btn-logout:hover {
-    background-color: #2d3748;
-}
+.btn-logout { width: 100%; background-color: #4a5568; color: #e2e8f0; }
+.btn-logout:hover { background-color: #2d3748; }
 
 .btn-cancel-edit {
-    background-color: #4a5568;
-    color: #e2e8f0;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    transition: background-color 0.2s ease-in-out;
+  background-color: #4a5568; color: #e2e8f0; font-weight: 600;
+  padding: .75rem 1.5rem; border-radius: .5rem; font-size: 1rem;
+  transition: background-color .2s;
 }
+.btn-cancel-edit:hover { background-color: #2d3748; }
 
-.btn-cancel-edit:hover {
-    background-color: #2d3748;
-}
-
-/* --- Tabelas de Resultados --- */
-.results-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
+/* =========================
+   TABELA
+========================= */
+.results-table { width: 100%; border-collapse: collapse; }
 .results-table th, .results-table td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 0.875rem;
+  padding: .75rem; text-align: left; border-bottom: 1px solid #e2e8f0;
+  font-size: .875rem;
 }
-
 .results-table thead th {
-    background-color: #f7fafc;
-    font-weight: 600;
-    color: #4a5568;
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
+  background-color: #f7fafc; font-weight: 600; color: #4a5568;
+  text-transform: uppercase; font-size: .7rem; letter-spacing: .05em;
 }
-
-.results-table tbody tr:hover {
-    background-color: #f7fafc;
-}
+.results-table tbody tr:hover { background-color: #f7fafc; }
 
 .status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  padding: .25rem .75rem; border-radius: 9999px;
+  font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
 }
 
-/* =================================================================== */
-/* BLOCO ÚNICO PARA LAYOUT DO FORMULÁRIO (COLUNAS E RÁDIOS)       */
-/* =================================================================== */
-
-/* --- 1. Estrutura das Colunas e Divisórias --- */
+/* =========================
+   FORM / LAYOUT
+========================= */
 .form-divider {
-    border: none;
-    border-top: 1px solid #e5e7eb;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
+  border: none; border-top: 1px solid #e5e7eb;
+  margin: 1.5rem 0;
 }
+.form-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 2rem; }
+.form-col { flex: 1; min-width: 250px; }
 
-.form-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 2rem;
-}
+/* gaps utilitário para grids */
+.g-gap { gap: 1rem; }
+@media (min-width: 768px){ .g-gap { gap: 1.5rem; } }
 
-.form-col {
-    flex: 1;
-    min-width: 250px;
-}
+/* radios em linha / coluna */
+.radio-group { display: flex; flex-direction: row; align-items: center; gap: 0.75rem; flex-wrap: wrap;}
+.radio-group-vertical { display: flex; flex-direction: column; gap: .75rem; }
 
-.form-col.has-divider {
-    border-left: 1px solid #e5e7eb;
-    padding-left: 2rem;
-}
-
-/* --- 2. Alinhamento dos Grupos de Botões de Rádio --- */
-.radio-group {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.radio-group-vertical {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-/* --- 3. Alinhamento INTERNO de cada opção (Círculo + Texto) --- */
 .radio-group label,
 .radio-group-vertical label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    white-space: nowrap; /* Impede que o texto quebre a linha */
+  display: flex; align-items: center; gap: .5rem; cursor: pointer; white-space: nowrap;
 }
+input[type="radio"] { margin: 0; padding: 0; }
 
-/* --- 4. Reset para o input, evitando margens indesejadas --- */
-input[type="radio"] {
-    margin: 0;
-    padding: 0;
-}
-
-/* --- 5. Estilo para botões de rádio em formato de card (Ex: Marcas) --- */
+/* radio em formato de card (Marcas) */
 .radio-card {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    flex-direction: column-reverse;
+  display: flex; align-items: center;
+  padding: .6rem .75rem; border: 1px solid #e2e8f0; border-radius: .5rem;
+  cursor: pointer; transition: background-color .2s; flex-direction: column-reverse;
+  width: 100%;
+}
+.radio-card:hover { background-color: #f7fafc; }
+.radio-card span { margin-left: .5rem; }
+
+/* grid responsiva para as marcas */
+.brands-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+}
+@media (min-width: 640px){ .brands-grid{ grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 768px){ .brands-grid{ grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1024px){ .brands-grid{ grid-template-columns: repeat(5, 1fr); } }
+
+/* botões de ação: stack no mobile */
+.actions-stack{ display: flex; justify-content: flex-end; gap: .75rem; }
+@media (max-width: 768px){
+  .actions-stack{ flex-direction: column; }
+  .actions-stack .btn{ width: 100%; }
 }
 
-.radio-card:hover {
-    background-color: #f7fafc;
+
+/* campos: manter inputs confortáveis em telas muito estreitas */
+input,select,textarea{ font-size:0.95rem; }
+@media (max-width:380px){
+  input,select,textarea{ padding:.6rem .75rem; }
 }
 
-.radio-card span {
-    margin-left: 0.5rem;
+*, *::before, *::after { box-sizing: border-box; }
+body { overflow-x: hidden; }
+
+/* Centraliza o conteúdo horizontalmente */
+.content-area{
+  display: flex;
+  justify-content: center;
+  padding: 1rem;           /* respiro no mobile */
+}
+
+/* Contêiner da página (envolve o card) */
+.page-container{
+  width: 100%;
+  max-width: 1200px;       /* limite confortável no desktop */
+}
+
+/* Card sempre ocupando 100% do contêiner */
+.card{ width: 100%; }
+
+/* Gaps consistentes nos grids que usam g-gap */
+.g-gap{ gap: 1rem; }
+@media (min-width: 768px){ .g-gap{ gap: 1.5rem; } }
+
+/* Marcas (radio-card) com grade que se adapta melhor */
+.brands-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 col no mobile */
+  gap: .75rem;
+}
+@media (min-width: 640px){ .brands-grid{ grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 768px){ .brands-grid{ grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1024px){ .brands-grid{ grid-template-columns: repeat(5, 1fr); } }
+
+/* Radios em card mais “clicáveis” no mobile */
+.radio-card{ width: 100%; padding: .6rem .75rem; }
+
+/* Campos mais confortáveis em telas muito estreitas */
+@media (max-width: 380px){
+  input, select, textarea{ padding: .6rem .75rem; font-size: .95rem; }
 }

@@ -1,233 +1,297 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova O.S. - Sistema de Ordens de Serviço</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
-    <link rel="stylesheet" href="/frontend/src/styles/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova O.S. - Sistema de Ordens de Serviço</title>
+
+  <!-- Tailwind (CDN) + fontes/ícones -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+  <!-- Seu CSS consolidado -->
+  <link rel="stylesheet" href="/frontend/src/styles/style.css">
 </head>
 
-<body>
+<body class="bg-slate-100">
+  <div id="app-container" class="main-layout">
+    <!-- Overlay (escurece fundo quando a sidebar está aberta) -->
+    <div class="overlay" id="overlay"></div>
 
-    <div id="app-container" class="main-layout hidden">
-        <!-- Sidebar de Navegação -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h1><i class="fas fa-tv"></i> J. OLIVEIRA</h1>
-                <p>Sistema de O.S.</p>
+    <!-- Sidebar -->
+    <aside id="sidebar"
+      class="sidebar transform -translate-x-full transition-transform duration-300 flex-col z-40">
+      <div class="sidebar-header">
+        <h1><i class="fas fa-tv"></i> J. OLIVEIRA</h1>
+        <p>Sistema de O.S.</p>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/index.html" class="active"><i class="fas fa-plus-circle"></i> Nova O.S.</a>
+        <a href="/frontend/src/pages/search.html"><i class="fas fa-search"></i> Pesquisar</a>
+        <a href="/frontend/src/pages/products.html"><i class="fas fa-box-open"></i> Estoque</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="logout-button" class="btn btn-logout">
+          <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+      </div>
+    </aside>
+
+    <!-- Área de Conteúdo -->
+    <main class="content-area">
+      <div class="page-container">
+        <div class="card">
+          <div class="card-header">
+            <!-- Hamburguer igual ao products -->
+            <button class="hamburger-btn" id="menu-toggle" aria-label="Abrir menu">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h2>Nova Ordem de Serviço</h2>
+          </div>
+
+          <form id="os-form" class="space-y-6">
+            <!-- Detalhes da O.S. -->
+            <fieldset>
+            <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Detalhes da O.S.</legend>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 g-gap">
+              <!-- Nº O.S. (agora editável) -->
+              <div>
+                <label for="os-number" class="block-label">Nº O.S.</label>
+                <input
+                  type="text"
+                  id="os-number"
+                  name="osNumber"
+                  autocomplete="off"
+                  inputmode="numeric"
+                  aria-label="Número da Ordem de Serviço"
+                />
+              </div>
+
+              <div>
+                <label for="entry-date" class="block-label">Data da Entrada</label>
+                <input
+                  type="date"
+                  id="entry-date"
+                  name="entryDate"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div>
+                <label class="block-label">Tipo</label>
+                <div class="flex items-center gap-x-6 pt-2" role="radiogroup" aria-label="Tipo da O.S.">
+                  <label class="inline-flex items-center gap-2">
+                    <input type="radio" name="osType" value="Orçamento" checked />
+                    <span>Orçamento</span>
+                  </label>
+                  <label class="inline-flex items-center gap-2">
+                    <input type="radio" name="osType" value="O.S." />
+                    <span>O.S.</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label for="order-status" class="block-label">Status</label>
+                <select id="order-status" name="status" autocomplete="off">
+                  <option value="Aberta">Aberta</option>
+                  <option value="Aguardando Aprovação">Aguardando Aprovação</option>
+                  <option value="Aprovado">Aprovado</option>
+                  <option value="Em Andamento">Em Andamento</option>
+                  <option value="Concluído">Concluído</option>
+                  <option value="Entregue">Entregue</option>
+                </select>
+              </div>
             </div>
-            <nav class="sidebar-nav">
-                <a href="/index.html" class="active"><i class="fas fa-plus-circle"></i> Nova O.S.</a>
-                <a href="/frontend/src/pages/search.html"><i class="fas fa-search"></i> Pesquisar</a>
-                <a href="/frontend/src/pages/products.html"><i class="fas fa-box-open"></i> Estoque</a>
-            </nav>
-            <div class="sidebar-footer">
-                <button id="logout-button" class="btn btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> Sair
+            </fieldset>
+
+            <!-- Informações do Cliente -->
+            <fieldset>
+              <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Informações do Cliente</legend>
+              <div class="grid grid-cols-1 md:grid-cols-2 g-gap">
+                <div>
+                  <label for="client-name" class="block-label">Cliente</label>
+                  <input type="text" id="client-name" placeholder="Nome completo do cliente" required>
+                </div>
+                <div>
+                  <label for="client-phone" class="block-label">Telefone</label>
+                  <input type="tel" id="client-phone" placeholder="(11) 99999-9999" required>
+                </div>
+                <div class="md:col-span-2">
+                  <label for="client-address" class="block-label">Endereço</label>
+                  <input type="text" id="client-address" placeholder="Rua, Número, Bairro, Cidade">
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block-label mb-2">Origem do Cliente</label>
+                  <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="customer-origin" value="Instagram">
+                      <span>Instagram</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="customer-origin" value="Google">
+                      <span>Google</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="customer-origin" value="Recomendação">
+                      <span>Recomendação</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="customer-origin" value="Outro">
+                      <span>Outro</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Informações do Aparelho -->
+            <fieldset>
+              <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Informações do Aparelho</legend>
+
+              <!-- Marcas -->
+              <div>
+                <label class="block-label mb-2">Marca (Objeto)</label>
+                <div class="brands-grid">
+                  <label class="radio-card"><input type="radio" name="object" value="SAMSUNG"><span>SAMSUNG</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="LG"><span>LG</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="AOC"><span>AOC</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="CCE"><span>CCE</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="PANASONIC"><span>PANASONIC</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="PHILCO"><span>PHILCO</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="PHILIPS"><span>PHILIPS</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="H-BUSTER"><span>H-BUSTER</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="SONY"><span>SONY</span></label>
+                  <label class="radio-card"><input type="radio" name="object" value="SIT/SEMP"><span>SIT/SEMP</span></label>
+                </div>
+              </div>
+
+              <!-- Campos do aparelho -->
+              <div class="grid grid-cols-1 md:grid-cols-2 g-gap">
+                <div>
+                  <label for="device-model" class="block-label">Modelo</label>
+                  <input type="text" id="device-model" placeholder="Ex: UN55TU8000" required>
+                </div>
+                <div>
+                  <label for="device-serial" class="block-label">Nº de Série</label>
+                  <input type="text" id="device-serial" placeholder="Número de série do aparelho">
+                </div>
+                <div class="md:col-span-2">
+                  <label for="device-defect" class="block-label">Defeito Reclamado</label>
+                  <textarea id="device-defect" rows="3" placeholder="Descrição do defeito" required></textarea>
+                </div>
+                <div>
+                  <label for="device-location" class="block-label">Localização do Aparelho</label>
+                  <input type="text" id="device-location" placeholder="Ex: Bancada 1, Prateleira 5">
+                </div>
+              </div>
+
+              <hr class="form-divider">
+
+              <div class="grid grid-cols-1 md:grid-cols-2 g-gap">
+                <div>
+                  <label class="block-label">Acessórios</label>
+                  <div class="radio-group">
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="accessories" value="Não" checked>
+                      <span>Não</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="accessories" value="Sim">
+                      <span>Sim</span>
+                    </label>
+                  </div>
+                  <div id="accessories-observation-container" class="mt-4 hidden">
+                    <label for="accessories-observation" class="block-label">Descreva os acessórios:</label>
+                    <textarea id="accessories-observation" placeholder="Ex: Controle remoto, cabo de força."></textarea>
+                  </div>
+                </div>
+
+                <div class="form-col has-divider">
+                  <label class="block-label">Estado do Aparelho</label>
+                  <div class="radio-group">
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="condition" value="Bom" checked><span>Bom</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="condition" value="Arranhado"><span>Arranhado</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="condition" value="Quebrado"><span>Quebrado</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                      <input type="radio" name="condition" value="Risco na tela"><span>Risco na tela</span>
+                    </label>
+                  </div>
+                  <div id="observation-field-container" class="mt-2 hidden">
+                    <label for="device-observation" class="block-label">Observações sobre o estado:</label>
+                    <textarea id="device-observation" placeholder="Ex: Arranhões na parte traseira..."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="form-divider">
+
+              <div class="grid grid-cols-1 md:grid-cols-3 g-gap">
+                <div>
+                  <label for="total-value" class="block-label">Valor Total R$</label>
+                  <input type="number" id="total-value" placeholder="0.00" step="0.01">
+                </div>
+                <div>
+                  <label for="down-payment" class="block-label">Sinal R$</label>
+                  <input type="number" id="down-payment" placeholder="0.00" step="0.01">
+                </div>
+                <div>
+                  <label for="remaining-value" class="block-label">Restante R$</label>
+                  <input type="number" id="remaining-value" placeholder="0.00" step="0.01" readonly>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="pt-5">
+              <div class="actions-stack">
+                <button type="submit" id="save-button" class="btn btn-primary">
+                  <i class="fas fa-save mr-2"></i> Salvar Ordem de Serviço
                 </button>
+              </div>
             </div>
-        </aside>
-
-        <!-- Área de Conteúdo Principal -->
-        <main class="content-area">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Nova Ordem de Serviço</h2>
-                </div>
-
-                <form id="os-form" class="space-y-6">
-                    <!-- Detalhes da O.S. -->
-                    <fieldset>
-                        <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Detalhes da O.S.</legend>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div>
-                                <label for="os-number" class="block-label">Nº O.S.</label>
-                                <input type="text" id="os-number" readonly class="bg-gray-200">
-                            </div>
-                            <div>
-                                <label for="entry-date" class="block-label">Data da Entrada</label>
-                                <input type="date" id="entry-date">
-                            </div>
-                            <div>
-                                <label class="block-label">Tipo</label>
-                                <div class="flex items-center gap-x-6 pt-2">
-                                    <label><input type="radio" name="os-type" value="Orçamento" checked><span>Orçamento</span></label>
-                                    <label><input type="radio" name="os-type" value="O.S."><span>O.S.</span></label>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="order-status" class="block-label">Status</label>
-                                <select id="order-status">
-                                    <option value="Aberta">Aberta</option>
-                                    <option value="Aguardando Aprovação">Aguardando Aprovação</option>
-                                    <option value="Aprovado">Aprovado</option>
-                                    <option value="Em Andamento">Em Andamento</option>
-                                    <option value="Concluído">Concluído</option>
-                                    <option value="Entregue">Entregue</option>
-                                </select>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <!-- Informações do Cliente -->
-                    <fieldset>
-                        <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Informações do Cliente</legend>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="client-name" class="block-label">Cliente</label>
-                                <input type="text" id="client-name" placeholder="Nome completo do cliente" required>
-                            </div>
-                            <div>
-                                <label for="client-phone" class="block-label">Telefone</label>
-                                <input type="tel" id="client-phone" placeholder="(11) 99999-9999" required>
-                            </div>
-                            <div class="md:col-span-2">
-                                <label for="client-address" class="block-label">Endereço</label>
-                                <input type="text" id="client-address" placeholder="Rua, Número, Bairro, Cidade">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block-label mb-2">Origem do Cliente</label>
-                                <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-                                    <label><input type="radio" name="customer-origin" value="Instagram"><span>Instagram</span></label>
-                                    <label><input type="radio" name="customer-origin" value="Google"><span>Google</span></label>
-                                    <label><input type="radio" name="customer-origin" value="Recomendação"><span>Recomendação</span></label>
-                                    <label><input type="radio" name="customer-origin" value="Outro"><span>Outro</span></label>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <!-- Informações do Aparelho -->
-                    <fieldset>
-                        <legend class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Informações do Aparelho</legend>
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block-label mb-2">Marca (Objeto)</label>
-                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                                    <label class="radio-card"><input type="radio" name="object" value="AOC"><span>AOC</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="CCE"><span>CCE</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="H-BUSTER"><span>H-BUSTER</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="LG"><span>LG</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="PANASONIC"><span>PANASONIC</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="PHILCO"><span>PHILCO</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="PHILIPS"><span>PHILIPS</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="SAMSUNG"><span>SAMSUNG</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="SONY"><span>SONY</span></label>
-                                    <label class="radio-card"><input type="radio" name="object" value="SIT/SEMP"><span>SIT/SEMP</span></label>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="device-model" class="block-label">Modelo</label>
-                                    <input type="text" id="device-model" placeholder="Ex: UN55TU8000" required>
-                                </div>
-                                <div>
-                                    <label for="device-serial" class="block-label">Nº de Série</label>
-                                    <input type="text" id="device-serial" placeholder="Número de série do aparelho">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="device-defect" class="block-label">Defeito Reclamado</label>
-                                    <textarea id="device-defect" rows="3" placeholder="Descrição do defeito" required></textarea>
-                                </div>
-                                <div>
-                                    <label for="device-location" class="block-label">Localização do Aparelho</label>
-                                    <input type="text" id="device-location" placeholder="Ex: Bancada 1, Prateleira 5">
-                                </div>
-                            </div>
-
-                            <hr class="form-divider">
-
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <label class="block-label">Acessórios</label>
-                                    <div id="accessories-radios" class="radio-group">
-                                        <label><input type="radio" name="accessories" value="Não" checked><span>Não</span></label>
-                                        <label><input type="radio" name="accessories" value="Sim"><span>Sim</span></label>
-                                    </div>
-                                    <div id="accessories-observation-container" class="mt-4 hidden">
-                                        <label for="accessories-observation" class="block-label">Descreva os acessórios:</label>
-                                        <textarea id="accessories-observation" placeholder="Ex: Controle remoto, cabo de força."></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-col has-divider">
-                                    <label class="block-label">Estado do Aparelho</label>
-                                    <div id="condition-radios" class="radio-group">
-                                        <label><input type="radio" name="condition" value="Bom" checked><span>Bom</span></label>
-                                        <label><input type="radio" name="condition" value="Arranhado"><span>Arranhado</span></label>
-                                        <label><input type="radio" name="condition" value="Quebrado"><span>Quebrado</span></label>
-                                        <label><input type="radio" name="condition" value="Risco na tela"><span>Risco na tela</span></label>
-                                    </div>
-                                    <div id="observation-field-container" class="mt-2 hidden">
-                                        <label for="device-observation" class="block-label">Observações sobre o estado:</label>
-                                        <textarea id="device-observation" placeholder="Ex: Arranhões na parte traseira..."></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr class="form-divider">
-
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <label for="total-value" class="block-label">Valor Total R$</label>
-                                    <input type="number" id="total-value" placeholder="0.00" step="0.01">
-                                </div>
-                                <div class="form-col">
-                                    <label for="down-payment" class="block-label">Sinal R$</label>
-                                    <input type="number" id="down-payment" placeholder="0.00" step="0.01">
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <div class="pt-5">
-                        <div class="flex justify-end">
-                            <button type="submit" id="save-button" class="btn btn-primary">
-                                <i class="fas fa-save mr-2"></i> Salvar Ordem de Serviço
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </main>
-    </div>
-
-    <!-- Seu Modal Popup aqui -->
-    <div id="popup-modal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div id="popup-icon-container" class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10">
-                            <!-- Icon will be inserted here by JS -->
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="popup-title">
-                                <!-- Title will be inserted here by JS -->
-                            </h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500" id="popup-message">
-                                    <!-- Message will be inserted here by JS -->
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" id="popup-close-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm">
-                        Ok
-                    </button>
-                </div>
-            </div>
+          </form>
         </div>
-    </div>
-    <script type="module" src="/backend/src/script.js"></script>
-</body>
+      </div>
+    </main>
+  </div>
 
+  <!-- Script do menu (mesmo comportamento do products) -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('menu-toggle');
+    const overlay  = document.getElementById('overlay');
+
+    function toggleSidebar() {
+      const willOpen = sidebar.classList.contains('-translate-x-full');
+      sidebar.classList.toggle('-translate-x-full');
+      sidebar.classList.toggle('translate-x-0');
+      overlay.classList.toggle('active', willOpen);
+    }
+    function closeSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      sidebar.classList.remove('translate-x-0');
+      overlay.classList.remove('active');
+    }
+
+    toggleBtn.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+    // Estado inicial: fechado (igual ao products)
+    document.addEventListener('DOMContentLoaded', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.remove('active');
+    });
+  </script>
+
+  <!-- Se seu JS de regras de negócio for necessário, mantenha -->
+  <!-- <script type="module" src="/backend/src/script.js"></script> -->
+</body>
 </html>
