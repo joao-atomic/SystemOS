@@ -39,7 +39,6 @@ function initMenu() {
   }
 }
 
-
 /* ========= 4) Página de Busca ========= */
 document.addEventListener('DOMContentLoaded', () => {
   initMenu();

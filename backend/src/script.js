@@ -1,4 +1,4 @@
-import { supabase, requireAuth, signOutAndRedirect } from '/backend/src/auth.js';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Autenticação
