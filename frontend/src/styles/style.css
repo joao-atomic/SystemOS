@@ -120,6 +120,36 @@ input:focus, select:focus, textarea:focus {
   input, select, textarea { padding: .6rem .75rem; font-size: .95rem; }
 }
 
+/* antes: input, select, textarea { ... }  */
+input[type="text"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+select,
+textarea {
+  width: 100%;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* radios/checkboxes não esticam e ficam alinhados */
+input[type="radio"],
+input[type="checkbox"] {
+  width: auto !important;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+  accent-color: #00A99D; /* corzinha nativa no Safari 15+ */
+}
+
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
   padding: .75rem 1.5rem; border-radius: .5rem; font-weight: 600;
@@ -173,12 +203,12 @@ input:focus, select:focus, textarea:focus {
 @media (min-width: 768px){ .g-gap { gap: 1.5rem; } }
 
 /* radios em linha / coluna */
-.radio-group { display: flex; flex-direction: row; align-items: center; gap: 0.75rem; flex-wrap: wrap;}
+.radio-group { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;}
 .radio-group-vertical { display: flex; flex-direction: column; gap: .75rem; }
 
 .radio-group label,
 .radio-group-vertical label {
-  display: flex; align-items: center; gap: .5rem; cursor: pointer; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: .5rem; cursor: pointer; white-space: nowrap;
 }
 input[type="radio"] { margin: 0; padding: 0; }
 
