@@ -286,3 +286,44 @@ body { overflow-x: hidden; }
 @media (max-width: 380px){
   input, select, textarea{ padding: .6rem .75rem; font-size: .95rem; }
 }
+
+/* --- Normaliza o <input type="date"> no Safari/iOS e deixa igual aos demais campos --- */
+#entry-date,
+input[type="date"]{
+  -webkit-appearance: none; /* Safari/iOS */
+  appearance: none;
+  width: 100%;
+  text-align: left;                 /* evita centralização do valor */
+  padding: .625rem 2.5rem .625rem .875rem; /* espaço p/ ícone à direita */
+  height: 42px;                     /* casa com a altura dos outros inputs */
+  line-height: 1.25rem;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: .5rem;
+}
+
+/* Ajusta a área interna do “valor” no Safari */
+input[type="date"]::-webkit-date-and-time-value { text-align: left; }
+input[type="date"]::-webkit-datetime-edit { padding: 0; }
+
+/* Posiciona o indicador do calendário no canto direito (Safari/macOS mostra; iOS às vezes esconde) */
+input[type="date"]::-webkit-calendar-picker-indicator{
+  position: absolute;
+  right: .75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .6;
+}
+
+/* Para iOS: evita zoom ao focar e mantém tamanho consistente */
+@supports (-webkit-touch-callout: none) {
+  input[type="date"]{ font-size: 16px; }
+}
+
+/* (Opcional) se quiser um ícone consistente mesmo quando o iOS esconder o indicador nativo */
+#entry-date {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M3 0a1 1 0 0 1 1 1v1h8V1a1 1 0 1 1 2 0v1h1a1 1 0 0 1 1 1v2H0V3a1 1 0 0 1 1-1h1V1a1 1 0 0 1 1-1zM0 7h16v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .75rem center;
+  background-size: 1rem;
+}
