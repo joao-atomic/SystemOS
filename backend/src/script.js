@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const accessoriesObsContainer = document.getElementById('accessories-observation-container');
   const popupGeneratePdfButton = document.getElementById('popup-generate-pdf-button');
 
+  // Armazena os dados da última OS criada para usar no PDF
+  let lastCreatedOSData = null;
+
   // ---------- UI helpers ----------
   // ---- Calcula "Restante R$" = Total - Sinal ----
   const totalInput = document.getElementById('total-value');
@@ -207,6 +210,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (name === 'osType' && osNumberInput) osNumberInput.value = gerarNumeroOS();
   });
 
+  // Função para gerar PDF com jsPDF
+  function generatePdfFromData(osData) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text(`Ordem de Serviço: ${osData.numero_ordem}`, 14, 22);
+
+    doc.setFontSize(12);
+    doc.text(`Data de Entrada: ${osData.data_entrada}`, 14, 32);
+    doc.text(`Status: ${osData.status}`, 14, 39);
+
+    // Informações do Cliente
+    doc.setFontSize(14);
+    doc.text('Informações do Cliente', 14, 55);
+    doc.setFontSize(12);
+    doc.text(`Cliente: ${osData.cliente}`, 14, 65);
+    doc.text(`Telefone: ${osData.telefone}`, 14, 72);
+    doc.text(`Endereço: ${osData.endereco}`, 14, 79);
+    doc.text(`Origem: ${osData.origem_cliente}`, 14, 86);
+
+    // Informações do Aparelho
+    doc.setFontSize(14);
+    doc.text('Informações do Aparelho', 14, 102);
+    doc.setFontSize(12);
+    doc.text(`Marca: ${osData.marca_aparelho}`, 14, 112);
+    doc.text(`Modelo: ${osData.modelo_aparelho}`, 14, 119);
+    doc.text(`Nº de Série: ${osData.numero_serie}`, 14, 126);
+    doc.text(`Defeito: ${osData.defeito_reclamado}`, 14, 133);
+    doc.text(`Localização: ${osData.localizacao_aparelho}`, 14, 140);
+    doc.text(`Acessórios: ${osData.acessorios}`, 14, 147);
+    doc.text(`Estado: ${osData.estado_aparelho}`, 14, 154);
+    doc.text(`Observações do Estado: ${osData.estado_aparelho_obs}`, 14, 161);
+
+    // Valores
+    doc.setFontSize(14);
+    doc.text('Valores', 14, 177);
+    doc.setFontSize(12);
+    doc.text(`Valor Total: R$ ${osData.valor_total.toFixed(2)}`, 14, 187);
+    doc.text(`Sinal: R$ ${osData.sinal.toFixed(2)}`, 14, 194);
+    const remainingValue = osData.valor_total - osData.sinal;
+    doc.text(`Restante: R$ ${remainingValue.toFixed(2)}`, 14, 201);
+
+    doc.save(`OS_${osData.numero_ordem}.pdf`);
+  }
+
   // ---------- Submit ----------
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -245,8 +294,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error(error);
         showPopup('Erro!', `Não foi possível salvar a O.S.: ${error.message}`, 'error');
       } else if (data && data.length > 0) {
-        showPopup('Sucesso!', 'Ordem de serviço salva com sucesso!');
         lastCreatedOSData = data[0];
+        showPopup('Sucesso!', 'Ordem de serviço salva com sucesso!');
         form.reset();
         if (entryDateInput) entryDateInput.valueAsDate = new Date();
         if (osNumberInput) osNumberInput.value = await gerarNumeroOS();
