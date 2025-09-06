@@ -39,11 +39,6 @@ function initMenu() {
   }
 }
 
-/* ========= 3) Supabase ========= */
-const SUPABASE_URL = 'https://dolmskfxulciscwrpfes.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvbG1za2Z4dWxjaXNjd3JwZmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNzYxOTQsImV4cCI6MjA2OTY1MjE5NH0.QB9j1Whd6ljxbMptXoAYlLbCm0WgmsD5PaFdPfBFH_E';
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ========= 4) Página de Busca ========= */
 document.addEventListener('DOMContentLoaded', () => {
