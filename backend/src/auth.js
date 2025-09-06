@@ -1,27 +1,39 @@
-// --- Lógica de Autenticação ---
+// Importa a biblioteca do Supabase
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-// Definição do usuário administrador
-const ADMIN_USER = {
-    email: 'admin@admin.com',
-    password: 'admin'
-};
+// Substitua com a URL e a Chave Pública do seu projeto Supabase
+const SUPABASE_URL = 'https://dolmskfxulciscwrpfes.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvbG1za2Z4dWxjaXNjd3JwZmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNzYxOTQsImV4cCI6MjA2OTY1MjE5NH0.QB9j1Whd6ljxbMptXoAYlLbCm0WgmsD5PaFdPfBFH_E';
 
-const loginForm = document.getElementById('login-form');
-const errorMessage = document.getElementById('error-message');
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+// Adiciona um listener para o formulário de login
+const form = document.getElementById('login-form');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const errorMessageDiv = document.getElementById('error-message');
 
-    if (email === ADMIN_USER.email && password === ADMIN_USER.password) {
-        // Login bem-sucedido
-        localStorage.setItem('isLoggedIn', 'true');
-        window.location.href = '/index.html';
+form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Impede o envio padrão do formulário
+
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    // Tenta fazer o login com o email e a senha
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        // Se houver um erro, exibe a mensagem para o usuário
+        errorMessageDiv.textContent = `Erro: login ou senha incorretos.`;
+        errorMessageDiv.classList.remove('hidden');
     } else {
-        // Credenciais inválidas
-        errorMessage.textContent = 'Email ou senha inválidos.';
-        errorMessage.classList.remove('hidden');
+        // Se o login for bem-sucedido
+        console.log('Login bem-sucedido!', data);
+        
+        // Redireciona para a página principal (ou outra página após o login)
+        window.location.href = '/index.html';
     }
 });
