@@ -9,12 +9,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!form) return;
 
   // ---------- ELEMENTOS ----------
-  const submitButton   = form.querySelector('button[type="submit"]');
-  const osNumberInput  = document.getElementById('os-number');
+  const submitButton = form.querySelector('button[type="submit"]');
+  const osNumberInput = document.getElementById('os-number');
   const entryDateInput = document.getElementById('entry-date');
 
-  const observationContainer        = document.getElementById('observation-field-container');
-  const accessoriesObsContainer     = document.getElementById('accessories-observation-container');
+  const observationContainer = document.getElementById('observation-field-container');
+  const accessoriesObsContainer = document.getElementById('accessories-observation-container');
 
   // ---------- UI helpers ----------
   // ---- Calcula "Restante R$" = Total - Sinal ----
@@ -45,11 +45,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Popup resiliente (usa alert() se não existir modal no HTML)
-  const popupModal         = document.getElementById('popup-modal');
+  const popupModal = document.getElementById('popup-modal');
   const popupIconContainer = document.getElementById('popup-icon-container');
-  const popupTitleEl       = document.getElementById('popup-title');
-  const popupMessageEl     = document.getElementById('popup-message');
-  const popupCloseButton   = document.getElementById('popup-close-button');
+  const popupTitleEl = document.getElementById('popup-title');
+  const popupMessageEl = document.getElementById('popup-message');
+  const popupCloseButton = document.getElementById('popup-close-button');
   popupCloseButton?.addEventListener('click', () => popupModal?.classList.add('hidden'));
 
   function showPopup(title, message, type = 'success') {
@@ -57,17 +57,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert(`${title}\n\n${message}`);
       return;
     }
-    popupTitleEl.textContent   = title;
+    popupTitleEl.textContent = title;
     popupMessageEl.textContent = message;
 
     if (type === 'success') {
       popupIconContainer.innerHTML = '<i class="fas fa-check text-green-600"></i>';
       popupIconContainer.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10';
-      popupCloseButton.className   = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 sm:ml-3 sm:w-auto sm:text-sm';
+      popupCloseButton.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 sm:ml-3 sm:w-auto sm:text-sm';
     } else {
       popupIconContainer.innerHTML = '<i class="fas fa-times text-red-600"></i>';
       popupIconContainer.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10';
-      popupCloseButton.className   = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm';
+      popupCloseButton.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm';
     }
     popupModal.classList.remove('hidden');
   }
@@ -76,15 +76,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   const getValue = (id) => document.getElementById(id)?.value.trim() ?? '';
   const getRadioValue = (name) =>
     form.querySelector(`input[name="${name}"]:checked`)?.value ?? '';
+  // Função para buscar o último número de OS do banco de dados
 
-  function gerarNumeroOS() {
-    const prefix = getRadioValue('osType') === 'O.S.' ? 'OS' : 'OR';
-    const d  = new Date();
+  const fetchLastOsNumber = async () => {
+    const { data, error } = await supabase
+      .from('ordens_de_servico')
+      .select('numero_ordem')
+      .order('data_criacao', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 = não encontrou nenhum registro
+      console.error('Erro ao buscar o último número de OS:', error.message);
+      return null;
+    }
+
+    if (data) {
+      // Extrai o número da OS do formato 'XX-YYMMDD-XXXX'
+      const lastNumberPart = data.numero_ordem.split('-')[2];
+      return parseInt(lastNumberPart, 10);
+    }
+    return 0; // Se não houver registros, retorna 0
+  };
+
+  async function gerarNumeroOS() {
+    const lastNumber = await fetchLastOsNumber();
+    const prefix = 'OS';
+    const d = new Date();
     const yy = String(d.getFullYear()).slice(-2);
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
-    const rnd = Math.floor(1000 + Math.random() * 9000);
-    return `${prefix}-${yy}${mm}${dd}-${rnd}`;
+    const nextNumber = (lastNumber + 1).toString().padStart(4, '0');
+    return `${prefix}-${yy}${mm}${dd}-${nextNumber}`;
   }
   // --- máscara e validação do telefone BR ---
   const phoneInput = document.getElementById('client-phone');
@@ -147,9 +170,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+
   // ---------- Estado inicial ----------
   if (entryDateInput) entryDateInput.valueAsDate = new Date();
-  if (osNumberInput)  osNumberInput.value = gerarNumeroOS();
+
+  (async () => {
+    if (osNumberInput) {
+      osNumberInput.value = await gerarNumeroOS();
+    }
+  })();
 
   // Mostrar/ocultar campos condicionais
   function updateConditionObservation() {
@@ -166,7 +195,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Mudanças no formulário
   form.addEventListener('change', (e) => {
     const name = e.target?.name;
-    if (name === 'condition')   updateConditionObservation();
+    if (name === 'condition') updateConditionObservation();
     if (name === 'accessories') updateAccessoriesObservation();
     if (name === 'osType' && osNumberInput) osNumberInput.value = gerarNumeroOS();
   });
@@ -212,7 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         showPopup('Sucesso!', 'Ordem de serviço salva com sucesso!');
         form.reset();
         if (entryDateInput) entryDateInput.valueAsDate = new Date();
-        if (osNumberInput)  osNumberInput.value = gerarNumeroOS();
+        if (osNumberInput) osNumberInput.value = await gerarNumeroOS();
         updateConditionObservation();
         updateAccessoriesObservation();
       }
