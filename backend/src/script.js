@@ -17,6 +17,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   const accessoriesObsContainer     = document.getElementById('accessories-observation-container');
 
   // ---------- UI helpers ----------
+  // ---- Calcula "Restante R$" = Total - Sinal ----
+  const totalInput = document.getElementById('total-value');
+  const downInput  = document.getElementById('down-payment');
+  const restInput  = document.getElementById('remaining-value');
+
+  function calcRemaining() {
+    const total = Number(totalInput.value) || 0;
+    const sinal = Number(downInput.value)  || 0;
+    const restante = Math.max(0, total - sinal);
+    restInput.value = restante.toFixed(2);
+  }
+
+  totalInput.addEventListener('input', calcRemaining);
+  downInput.addEventListener('input',  calcRemaining);
+  calcRemaining();
+
   function setSubmitButtonState(state, label) {
     if (!submitButton) return;
     if (state === 'loading') {
@@ -160,6 +176,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
 
     if (osNumberInput && !osNumberInput.value) osNumberInput.value = gerarNumeroOS();
+    const total = Number(getValue('total-value')) || 0;
+    const sinal = Number(getValue('down-payment')) || 0;
 
     const payload = {
       tipo: getRadioValue('osType'),
@@ -181,6 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       estado_aparelho_obs: getValue('device-observation'),
       sinal: parseFloat(getValue('down-payment')) || 0,
       valor_total: parseFloat(getValue('total-value')) || 0,
+      valor_restante: total > 0 ? Math.max(0, total - sinal) : 0,
     };
 
     setSubmitButtonState('loading', 'Salvando...');
