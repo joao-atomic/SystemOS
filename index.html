@@ -116,7 +116,7 @@
                 </div>
                 <div>
                   <label for="client-phone" class="block-label">Telefone</label>
-                  <input type="tel" id="client-phone" placeholder="(11) 99999-9999" required>
+                  <input type="tel" id="client-phone" placeholder="(11) 99999-9999" required inputmode="numeric" autocomplete="tel" maxlength="15" pattern="^\(\d{2}\)\s?\d{4,5}-\d{4}$">
                 </div>
                 <div class="md:col-span-2">
                   <label for="client-address" class="block-label">Endereço</label>

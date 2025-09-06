@@ -70,6 +70,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     const rnd = Math.floor(1000 + Math.random() * 9000);
     return `${prefix}-${yy}${mm}${dd}-${rnd}`;
   }
+  // --- máscara e validação do telefone BR ---
+  const phoneInput = document.getElementById('client-phone');
+
+  function onlyDigits(s) {
+    return s.replace(/\D/g, '');
+  }
+
+  // máscara progressiva (não força parênteses/hífen quando vazio)
+  function formatBRPhone(v) {
+    const d = onlyDigits(v).slice(0, 11); // até 11 dígitos
+
+    if (!d) return '';                                   // nada -> vazio
+    if (d.length <= 2) return `(${d}`;                   // (DD
+    if (d.length <= 6) return `(${d.slice(0,2)}) ${d.slice(2)}`;          // (DD) 1234
+    if (d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`; // fixo
+    return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7,11)}`;                // celular
+  }
+
+  function handlePhoneInput(e) {
+    const beforeDigits = onlyDigits(e.target.value);
+
+    // se deletou tudo (Ctrl+A + Del/Backspace, ou limpou), não recoloca máscara
+    if (beforeDigits.length === 0) {
+      e.target.value = '';
+      return;
+    }
+
+    e.target.value = formatBRPhone(e.target.value);
+
+    // simplificação: cursor vai pro fim (evita “pulos”)
+    const end = e.target.value.length;
+    e.target.setSelectionRange(end, end);
+  }
+
+  function validatePhone() {
+    const ok = /^\(\d{2}\)\s?\d{4,5}-\d{4}$/.test(phoneInput.value);
+    phoneInput.setCustomValidity(ok ? '' : 'Informe um telefone válido no formato (11) 99999-9999');
+  }
+
+  // se selecionar tudo e apertar Backspace/Delete, limpa de uma vez
+  function quickClearOnFullDelete(e) {
+    const allSelected = phoneInput.selectionStart === 0 &&
+                        phoneInput.selectionEnd === phoneInput.value.length;
+    if (allSelected && (e.key === 'Backspace' || e.key === 'Delete')) {
+      e.preventDefault();
+      phoneInput.value = '';
+    }
+  }
+
+  if (phoneInput) {
+    phoneInput.addEventListener('input', handlePhoneInput);
+    phoneInput.addEventListener('blur', validatePhone);
+    phoneInput.addEventListener('keydown', quickClearOnFullDelete);
+    phoneInput.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+      phoneInput.value = formatBRPhone(text);
+      validatePhone();
+    });
+  }
 
   // ---------- Estado inicial ----------
   if (entryDateInput) entryDateInput.valueAsDate = new Date();
