@@ -3,7 +3,7 @@ import { supabase, requireAuth, signOutAndRedirect } from '/backend/src/auth.js'
 
 /* ========= 0) Proteção ========= */
 document.addEventListener('DOMContentLoaded', async () => {
-  await requireAuth(); // protege a página e remove 'hidden'
+  await requireAuth();
   document.getElementById('logout-button')?.addEventListener('click', signOutAndRedirect);
 });
 
@@ -18,7 +18,7 @@ function initMenu() {
     const setSidebar = (open) => {
       sidebar.classList.toggle('-translate-x-full', !open);
       sidebar.classList.toggle('translate-x-0', open);
-      sidebar.classList.toggle('open', open);   // compat CSS antigo
+      sidebar.classList.toggle('open', open);
       overlay.classList.toggle('active', open);
       buttons.forEach(b => b.setAttribute('aria-expanded', String(open)));
     };
@@ -26,7 +26,7 @@ function initMenu() {
     const toggleSidebar = () => setSidebar(sidebar.classList.contains('-translate-x-full'));
     const closeSidebar  = () => setSidebar(false);
 
-    setSidebar(false); // estado inicial: fechado (mobile)
+    setSidebar(false);
     buttons.forEach(btn => btn.addEventListener('click', toggleSidebar));
     overlay.addEventListener('click', closeSidebar);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
@@ -37,33 +37,32 @@ function initMenu() {
 
 /* ========= 2) Utilidades ========= */
 const norm = (v) => (v ?? '').toString().trim().toLowerCase();
-const sameDay = (d1, d2) => d1.setHours(0,0,0,0) === d2.setHours(0,0,0,0);
 
-/* ========= 3) Página de Busca ========= */
+/* ========= 3) Página de Busca (com paginação) ========= */
 document.addEventListener('DOMContentLoaded', () => {
   initMenu();
 
   // DOM
-  const resultsTableBody   = document.getElementById('results-table-body');
-  const noResultsMessage   = document.getElementById('no-results-message');
+  const resultsTableBody = document.getElementById('results-table-body');
+  const noResultsMessage = document.getElementById('no-results-message');
 
-  // inputs de filtro
-  const form               = document.getElementById('search-form');
-  const btnSearch          = document.getElementById('search-button');
+  // filtros
+  const form        = document.getElementById('search-form');
+  const btnSearch   = document.getElementById('search-button');
 
-  const fBrandText         = document.getElementById('filter-brand');
-  const fModel             = document.getElementById('filter-model');
-  const fDefect            = document.getElementById('filter-defect');
-  const fGeneral           = document.getElementById('filter-general');
-  const fOs                = document.getElementById('filter-os');
-  const fClient            = document.getElementById('filter-client');
-  const fPhone             = document.getElementById('filter-phone');
-  const fStatus            = document.getElementById('filter-status');
-  const fDateFrom          = document.getElementById('filter-date-from');
-  const fDateTo            = document.getElementById('filter-date-to');
-  const fBrandList         = document.getElementById('filter-brand2');
+  const fBrandText  = document.getElementById('filter-brand');
+  const fModel      = document.getElementById('filter-model');
+  const fDefect     = document.getElementById('filter-defect');
+  const fGeneral    = document.getElementById('filter-general');
+  const fOs         = document.getElementById('filter-os');
+  const fClient     = document.getElementById('filter-client');
+  const fPhone      = document.getElementById('filter-phone');
+  const fStatus     = document.getElementById('filter-status');
+  const fDateFrom   = document.getElementById('filter-date-from');
+  const fDateTo     = document.getElementById('filter-date-to');
+  const fBrandList  = document.getElementById('filter-brand2');
 
-  // modal de edição
+  // modal
   const editModal          = document.getElementById('edit-status-modal');
   const modalOsNumber      = document.getElementById('modal-os-number');
   const modalCurrentStatus = document.getElementById('modal-current-status');
@@ -71,8 +70,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalSaveButton    = document.getElementById('modal-save-button');
   const modalCancelButton  = document.getElementById('modal-cancel-button');
 
+  // estado
+  const PAGE_SIZE = 15;
   let allServiceOrders = [];
-  let currentEditingOrderId = null;
+  let filteredOrders   = [];
+  let currentPage      = 1;
+
+  // cria (ou pega) o contêiner do paginador logo após a tabela
+  let pagination = document.getElementById('pagination');
+  if (!pagination) {
+    pagination = document.createElement('div');
+    pagination.id = 'pagination';
+    pagination.className = 'flex items-center justify-between mt-4';
+    // insere no mesmo wrapper da tabela
+    const wrapper = noResultsMessage?.parentElement; // .overflow-x-auto
+    wrapper?.appendChild(pagination);
+  }
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -92,17 +105,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openEditModal(order) {
     if (!editModal) return;
-    currentEditingOrderId = order.id;
-    modalOsNumber.textContent = order.numero_ordem ?? '—';
+    modalOsNumber.textContent      = order.numero_ordem ?? '—';
     modalCurrentStatus.textContent = order.status ?? '—';
+    editModal.classList.remove('hidden');
 
+    // popular opções
     modalStatusSelect.innerHTML = '';
     if (finalStatuses.includes(order.status)) {
       modalStatusSelect.innerHTML = '<option>Status finalizado, não pode ser alterado.</option>';
       modalSaveButton.disabled = true;
     } else {
-      const currentIndex = statusOrder.indexOf(order.status);
-      for (let i = currentIndex + 1; i < statusOrder.length; i++) {
+      const start = Math.max(0, statusOrder.indexOf(order.status) + 1);
+      for (let i = start; i < statusOrder.length; i++) {
         const opt = document.createElement('option');
         opt.value = statusOrder[i];
         opt.textContent = statusOrder[i];
@@ -114,41 +128,25 @@ document.addEventListener('DOMContentLoaded', () => {
       modalStatusSelect.appendChild(cancelOpt);
       modalSaveButton.disabled = false;
     }
-    editModal.classList.remove('hidden');
+
+    // salvar
+    modalSaveButton.onclick = async () => {
+      const newStatus = modalStatusSelect.value;
+      modalSaveButton.disabled = true;
+      modalSaveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+      const { error } = await supabase
+        .from('ordens_de_servico')
+        .update({ status: newStatus })
+        .eq('id', order.id);
+      modalSaveButton.disabled = false;
+      modalSaveButton.innerHTML = 'Salvar Alterações';
+      editModal.classList.add('hidden');
+      if (error) return alert(`Erro ao atualizar: ${error.message}`);
+      await fetchOrders();          // recarrega
+      applyFiltersAndRender();      // reaplica filtros e volta pra pág. 1
+    };
   }
-
-  function closeEditModal() {
-    if (!editModal) return;
-    editModal.classList.add('hidden');
-    currentEditingOrderId = null;
-  }
-
-  async function saveStatusChange() {
-    if (!modalStatusSelect || !currentEditingOrderId) return;
-    const newStatus = modalStatusSelect.value;
-    if (!newStatus) return;
-
-    modalSaveButton.disabled = true;
-    modalSaveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-
-    const { error } = await supabase
-      .from('ordens_de_servico')
-      .update({ status: newStatus })
-      .eq('id', currentEditingOrderId);
-
-    if (error) {
-      alert(`Erro ao atualizar o status: ${error.message}`);
-    } else {
-      alert('Status atualizado com sucesso!');
-      await fetchOrders();
-    }
-    modalSaveButton.disabled = false;
-    modalSaveButton.innerHTML = 'Salvar Alterações';
-    closeEditModal();
-  }
-
-  modalCancelButton?.addEventListener('click', closeEditModal);
-  modalSaveButton  ?.addEventListener('click', saveStatusChange);
+  modalCancelButton?.addEventListener('click', () => editModal.classList.add('hidden'));
 
   resultsTableBody?.addEventListener('click', (e) => {
     const btn = e.target.closest('.edit-btn');
@@ -158,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (order) openEditModal(order);
   });
 
+  /* ---------- renderização ---------- */
   function renderResults(orders) {
     if (!resultsTableBody || !noResultsMessage) return;
 
@@ -193,24 +192,83 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ---- APLICA FILTROS (só quando enviar o formulário) ----
-  function applyFilters() {
-    const brandText   = norm(fBrandText?.value);
-    const model       = norm(fModel?.value);
-    const defect      = norm(fDefect?.value);
-    const general     = norm(fGeneral?.value);
-    const osNumber    = norm(fOs?.value);
-    const client      = norm(fClient?.value);
-    const phone       = norm(fPhone?.value);
-    const status      = norm(fStatus?.value);
-    const brandList   = norm(fBrandList?.value);
+  /* ---------- paginação ---------- */
+  const totalPages = () => Math.max(1, Math.ceil(filteredOrders.length / PAGE_SIZE));
+  const clampPage  = (n) => Math.min(Math.max(n, 1), totalPages());
 
-    const fromStr     = (fDateFrom?.value || '').trim();
-    const toStr       = (fDateTo  ?.value || '').trim();
-    const fromDate    = fromStr ? new Date(fromStr) : null;
-    const toDate      = toStr   ? new Date(toStr)   : null;
+  function renderPagination() {
+    if (!pagination) return;
+    pagination.innerHTML = '';
+    if (!filteredOrders.length) return;
 
-    const filtered = allServiceOrders.filter(order => {
+    const tp = totalPages();
+    currentPage = clampPage(currentPage);
+    const start = (currentPage - 1) * PAGE_SIZE + 1;
+    const end   = Math.min(currentPage * PAGE_SIZE, filteredOrders.length);
+
+    // resumo
+    const summary = document.createElement('div');
+    summary.className = 'text-sm text-gray-600';
+    summary.textContent = `Mostrando ${start}–${end} de ${filteredOrders.length}`;
+
+    // controles
+    const controls = document.createElement('div');
+    controls.className = 'flex items-center gap-2';
+
+    const btn = (label, disabled, onClick, isActive=false) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.className =
+        `px-3 py-1 rounded border text-sm ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'} ` +
+        (isActive ? 'bg-teal-600 text-white border-teal-600' : 'bg-white text-gray-700 border-gray-300');
+      b.disabled = disabled;
+      if (!disabled) b.addEventListener('click', onClick);
+      return b;
+    };
+
+    // Prev
+    controls.appendChild(btn('‹', currentPage === 1, () => { currentPage--; renderPage(); }));
+
+    // páginas (janela de 5)
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage   = Math.min(tp, currentPage + 2);
+    for (let p = startPage; p <= endPage; p++) {
+      controls.appendChild(btn(String(p), false, () => { currentPage = p; renderPage(); }, p === currentPage));
+    }
+
+    // Next
+    controls.appendChild(btn('›', currentPage === tp, () => { currentPage++; renderPage(); }));
+
+    pagination.appendChild(summary);
+    pagination.appendChild(controls);
+  }
+
+  function renderPage() {
+    const start = (clampPage(currentPage) - 1) * PAGE_SIZE;
+    const pageItems = filteredOrders.slice(start, start + PAGE_SIZE);
+    renderResults(pageItems);
+    renderPagination();
+  }
+
+  /* ---------- filtros ---------- */
+  function getFilteredOrders() {
+    const brandText = norm(fBrandText?.value);
+    const model     = norm(fModel?.value);
+    const defect    = norm(fDefect?.value);
+    const general   = norm(fGeneral?.value);
+    const osNumber  = norm(fOs?.value);
+    const client    = norm(fClient?.value);
+    const phone     = norm(fPhone?.value);
+    const status    = norm(fStatus?.value);
+    const brandList = norm(fBrandList?.value);
+
+    const fromStr   = (fDateFrom?.value || '').trim();
+    const toStr     = (fDateTo  ?.value || '').trim();
+    const fromDate  = fromStr ? new Date(fromStr) : null;
+    const toDate    = toStr   ? new Date(toStr)   : null;
+
+    return allServiceOrders.filter(order => {
       const oBrand   = norm(order.marca_aparelho);
       const oModel   = norm(order.modelo_aparelho);
       const oDefect  = norm(order.defeito_reclamado);
@@ -219,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const oPhone   = norm(order.telefone);
       const oStatus  = norm(order.status);
 
-      // texto livres
       const okBrandText = brandText ? oBrand.includes(brandText) : true;
       const okModel     = model     ? oModel.includes(model)     : true;
       const okDefect    = defect    ? oDefect.includes(defect)   : true;
@@ -228,9 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const okClient    = client    ? oClient.includes(client)   : true;
       const okPhone     = phone     ? oPhone.includes(phone)     : true;
 
-      // selects
       const okStatus    = status    ? oStatus === status         : true;
-      const okBrandList = brandList ? oBrand === brandList       : true;
+      const okBrandList = brandList ? oBrand  === brandList      : true;
 
       // datas
       let okDates = true;
@@ -239,30 +295,39 @@ document.addEventListener('DOMContentLoaded', () => {
         else {
           const d = new Date(order.data_entrada);
           d.setHours(0,0,0,0);
-          if (fromDate && d < new Date(fromDate.setHours(0,0,0,0))) okDates = false;
-          if (toDate   && d > new Date(toDate.setHours(0,0,0,0)))   okDates = false;
+          if (fromDate) {
+            const f = new Date(fromDate); f.setHours(0,0,0,0);
+            if (d < f) okDates = false;
+          }
+          if (toDate) {
+            const t = new Date(toDate); t.setHours(0,0,0,0);
+            if (d > t) okDates = false;
+          }
         }
       }
 
       return okBrandText && okModel && okDefect && okGeneral &&
              okOs && okClient && okPhone && okStatus && okBrandList && okDates;
     });
-
-    renderResults(filtered);
   }
 
-  // Só filtra ao clicar no botão/submit do form
+  function applyFiltersAndRender() {
+    filteredOrders = getFilteredOrders();
+    currentPage = 1;
+    renderPage();
+  }
+
+  // Só filtra ao clicar em "Buscar" (submit)
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    applyFilters();
+    applyFiltersAndRender();
   });
   btnSearch?.addEventListener('click', (e) => {
-    // (não é estritamente necessário, pois o botão já é type="submit")
     e.preventDefault();
     form?.dispatchEvent(new Event('submit', { cancelable: true }));
   });
 
-  // Busca inicial (sem filtros)
+  /* ---------- carga inicial ---------- */
   async function fetchOrders() {
     if (noResultsMessage) {
       noResultsMessage.textContent = 'Buscando dados...';
@@ -278,8 +343,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (noResultsMessage) noResultsMessage.textContent = `Erro ao buscar dados: ${error.message}`;
       return;
     }
+
     allServiceOrders = data || [];
-    renderResults(allServiceOrders);
+    // sem filtros inicialmente
+    filteredOrders = [...allServiceOrders];
+    currentPage = 1;
+    renderPage();
   }
 
   fetchOrders();
