@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const observationContainer = document.getElementById('observation-field-container');
   const accessoriesObsContainer = document.getElementById('accessories-observation-container');
+  const popupGeneratePdfButton = document.getElementById('popup-generate-pdf-button');
 
   // ---------- UI helpers ----------
   // ---- Calcula "Restante R$" = Total - Sinal ----
@@ -64,10 +65,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       popupIconContainer.innerHTML = '<i class="fas fa-check text-green-600"></i>';
       popupIconContainer.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10';
       popupCloseButton.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 sm:ml-3 sm:w-auto sm:text-sm';
+      if (popupGeneratePdfButton) {
+        popupGeneratePdfButton.classList.remove('hidden');
+      }
     } else {
       popupIconContainer.innerHTML = '<i class="fas fa-times text-red-600"></i>';
       popupIconContainer.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10';
       popupCloseButton.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm';
+      if (popupGeneratePdfButton) {
+        popupGeneratePdfButton.classList.add('hidden');
+      }
     }
     popupModal.classList.remove('hidden');
   }
@@ -233,23 +240,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     setSubmitButtonState('loading', 'Salvando...');
     try {
-      const { error } = await supabase.from('ordens_de_servico').insert([payload]);
+      const { error, data } = await supabase.from('ordens_de_servico').insert([payload]).select();
       if (error) {
         console.error(error);
         showPopup('Erro!', `Não foi possível salvar a O.S.: ${error.message}`, 'error');
-      } else {
+      } else if (data && data.length > 0) {
         showPopup('Sucesso!', 'Ordem de serviço salva com sucesso!');
+        lastCreatedOSData = data[0];
         form.reset();
         if (entryDateInput) entryDateInput.valueAsDate = new Date();
         if (osNumberInput) osNumberInput.value = await gerarNumeroOS();
         updateConditionObservation();
         updateAccessoriesObservation();
+      } else {
+        showPopup('Erro!', 'A ordem de serviço foi salva, mas não foi possível recuperar os dados.', 'error');
       }
     } catch (err) {
       console.error(err);
       showPopup('Erro inesperado', 'Ocorreu um erro ao salvar.', 'error');
     } finally {
       setSubmitButtonState('ready', 'Salvar Ordem de Serviço');
+    }
+  });
+
+  // Listener para o botão de gerar PDF no pop-up
+  popupGeneratePdfButton?.addEventListener('click', () => {
+    if (lastCreatedOSData) {
+      generatePdfFromData(lastCreatedOSData);
+    } else {
+      showPopup('Erro', 'Nenhuma O.S. recente encontrada para gerar PDF.', 'error');
     }
   });
 });
