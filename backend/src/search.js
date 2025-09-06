@@ -1,19 +1,10 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { supabase, requireAuth, signOutAndRedirect } from '/backend/src/auth.js';
 
-/* ========= 1) Auth ========= */
-function checkAuth() {
-  try {
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-      window.location.href = '/frontend/src/pages/login.html';
-    } else {
-      const app = document.getElementById('app-container');
-      if (app) app.classList.remove('hidden');
-    }
-  } catch (e) {
-    console.error('Erro na função checkAuth:', e);
-  }
-}
-checkAuth();
+document.addEventListener('DOMContentLoaded', async () => {
+  await requireAuth(); // <-- protege a página e remove 'hidden'
+
+  document.getElementById('logout-button')?.addEventListener('click', signOutAndRedirect);
+});
 
 /* ========= 2) Menu (hambúrguer + overlay) ========= */
 function initMenu() {

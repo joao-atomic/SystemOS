@@ -14,7 +14,7 @@
 </head>
 
 <body class="bg-slate-100">
-  <div id="app-container" class="main-layout">
+  <div id="app-container" class="main-layout hidden">
     <!-- Overlay (escurece fundo quando a sidebar está aberta) -->
     <div class="overlay" id="overlay"></div>
 
@@ -46,7 +46,7 @@
             <button class="hamburger-btn" id="menu-toggle" aria-label="Abrir menu">
               <i class="fas fa-bars"></i>
             </button>
-            <h2>Nova Ordem de Serviço</h2>
+            <h2 id="form-title">Nova Ordem de Serviço</h2>
           </div>
 
           <form id="os-form" class="space-y-6">
@@ -192,7 +192,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 g-gap">
                 <div>
                   <label class="block-label">Acessórios</label>
-                  <div class="radio-group">
+                  <div class="radio-group" id="accessories-radios">
                     <label class="inline-flex items-center gap-2">
                       <input type="radio" name="accessories" value="Não" checked>
                       <span>Não</span>
@@ -210,7 +210,7 @@
 
                 <div class="form-col has-divider">
                   <label class="block-label">Estado do Aparelho</label>
-                  <div class="radio-group">
+                  <div class="radio-group" id="condition-radios">
                     <label class="inline-flex items-center gap-2">
                       <input type="radio" name="condition" value="Bom" checked><span>Bom</span>
                     </label>
@@ -290,8 +290,17 @@
       overlay.classList.remove('active');
     });
   </script>
+  <!-- Script de autenticação (igual ao search/products) -->
+  <script type="module">
+  import { requireAuth, signOutAndRedirect } from '/backend/src/auth.js';
 
-  <!-- Se seu JS de regras de negócio for necessário, mantenha -->
-  <!-- <script type="module" src="/backend/src/script.js"></script> -->
+  // protege a página e remove o "hidden" quando a sessão existir
+  await requireAuth();
+
+  // logout do botão lateral
+  document.getElementById('logout-button')?.addEventListener('click', signOutAndRedirect);
+  </script>
+
+  <script type="module" src="/backend/src/script.js"></script>
 </body>
 </html>

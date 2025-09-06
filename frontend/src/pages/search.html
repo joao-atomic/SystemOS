@@ -14,7 +14,7 @@
 </head>
 
 <body class="bg-slate-100">
-  <div id="app-container" class="main-layout">
+  <div id="app-container" class="main-layout hidden">
     <!-- Overlay -->
     <div class="overlay" id="overlay"></div>
 
@@ -46,7 +46,7 @@
             <button class="hamburger-btn" id="menu-toggle" aria-label="Abrir menu">
               <i class="fas fa-bars"></i>
             </button>
-            <h2>Filtros de Busca</h2>
+            <h2 id="form-title">Filtros de Busca</h2>
           </div>
 
           <form id="search-form" class="space-y-6">
@@ -188,9 +188,51 @@
       </div>
     </div>
   </div>
+    <!-- Script do menu (igual ao index/search) -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('menu-toggle'); // definido no header
+    const overlay  = document.getElementById('overlay');
 
+    function toggleSidebar() {
+      const willOpen = sidebar.classList.contains('-translate-x-full');
+      sidebar.classList.toggle('-translate-x-full');
+      sidebar.classList.toggle('translate-x-0');
+      overlay.classList.toggle('active', willOpen);
+    }
+    function closeSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      sidebar.classList.remove('translate-x-0');
+      overlay.classList.remove('active');
+    }
+
+    // garante que o botão exista (página pode carregar antes)
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('menu-toggle');
+      if (btn) btn.addEventListener('click', toggleSidebar);
+
+      overlay.addEventListener('click', closeSidebar);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+      // estado inicial: fechado
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.remove('active');
+    });
+  </script>
+  
   <!-- Lógica da busca -->
   <script type="module" src="/backend/src/search.js"></script>
+  
+  <!-- Script do layout (menu, sidebar, etc) -->
+  <script type="module">
+  import { requireAuth, signOutAndRedirect } from '/backend/src/auth.js';
+
+  // protege a página e remove o "hidden" quando a sessão existir
+  await requireAuth();
+
+  // logout do botão lateral
+  document.getElementById('logout-button')?.addEventListener('click', signOutAndRedirect);
+</script>
 </body>
 </html>
 <!DOCTYPE html>

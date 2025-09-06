@@ -1,21 +1,13 @@
 // products.js funcional com filtro
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { supabase, requireAuth, signOutAndRedirect } from '/backend/src/auth.js';
 
-const SUPABASE_URL = 'https://dolmskfxulciscwrpfes.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvbG1za2Z4dWxjaXNjd3JwZmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNzYxOTQsImV4cCI6MjA2OTY1MjE5NH0.QB9j1Whd6ljxbMptXoAYlLbCm0WgmsD5PaFdPfBFH_E';
+document.addEventListener('DOMContentLoaded', async () => {
+  await requireAuth(); // <-- protege a página e remove 'hidden'
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  document.getElementById('logout-button')?.addEventListener('click', signOutAndRedirect);
+});
 
-function checkAuth() {
-  if (localStorage.getItem('isLoggedIn') !== 'true') {
-    window.location.href = '/frontend/src/pages/login.html';
-  } else {
-    const appContainer = document.getElementById('app-container');
-    if (appContainer) appContainer.classList.remove('hidden');
-  }
-}
-checkAuth();
-
+// Função para lidar com o menu móvel (sidebar)
 function handleMobileMenu() {
   const hamburgerButton = document.querySelector('.hamburger-btn');
   const sidebar = document.querySelector('.sidebar');

@@ -1,17 +1,10 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { supabase, requireAuth, signOutAndRedirect } from '/backend/src/auth.js';
 
-// --- Lógica de Proteção de Página ---
-function checkAuth() {
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-        window.location.href = '/frontend/src/pages/login.html';;
-    } else {
-        const appContainer = document.getElementById('app-container');
-        if (appContainer) {
-            appContainer.classList.remove('hidden');
-        }
-    }
-}
-checkAuth();
+document.addEventListener('DOMContentLoaded', async () => {
+  await requireAuth(); // <-- protege a página e remove 'hidden'
+
+  document.getElementById('logout-button')?.addEventListener('click', signOutAndRedirect);
+});
 
 // --- Lógica do Menu Mobile ---
 function handleMobileMenu() {
@@ -59,33 +52,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const accessoriesObservationContainer = document.getElementById('accessories-observation-container');
 
 
-    // Adiciona um "ouvinte" para qualquer clique dentro do grupo de rádio
-    conditionRadios.addEventListener('click', (e) => {
-        // Verifica se o clique foi em um input do tipo radio
-        if (e.target.type === 'radio') {
-            const selectedValue = e.target.value;
+    function updateConditionObservation() {
+    const sel = document.querySelector('input[name="condition"]:checked');
+    if (!sel) return;
+    // se NÃO for "Bom", mostra
+    observationContainer.classList.toggle('hidden', sel.value === 'Bom');
+    }
+    conditionRadios.forEach(r => r.addEventListener('change', updateConditionObservation));
+    updateConditionObservation(); // garante estado inicial
 
-            if (selectedValue !== 'Bom') {
-                // Se não for "Bom", remove a classe 'hidden' para mostrar o campo
-                observationContainer.classList.remove('hidden');
-            } else {
-                // Se for "Bom", adiciona a classe 'hidden' para esconder
-                observationContainer.classList.add('hidden');
-            }
-        }
-    });
+    function updateAccessoriesObservation() {
+      const sel = document.querySelector('input[name="accessories"]:checked');
+      if (!sel) return;
+      // se for "Sim", mostra
+      accessoriesObservationContainer.classList.toggle('hidden', sel.value !== 'Sim');
+    }
+    accessoriesRadios.forEach(r => r.addEventListener('change', updateAccessoriesObservation));
+    updateAccessoriesObservation(); // garante estado inicial
 
-    accessoriesRadios.addEventListener('click', (e) => {
-        if (e.target.type === 'radio') {
-            // Mostra o campo se o valor for "Sim"
-            if (e.target.value === 'Sim') {
-                accessoriesObservationContainer.classList.remove('hidden');
-            } else {
-                // Esconde se o valor for "Não"
-                accessoriesObservationContainer.classList.add('hidden');
-            }
-        }
-    });
+    // FAILSAFE: se quiser garantir mesmo, escute o form inteiro também
+    if (osForm) {
+      osForm.addEventListener('change', (e) => {
+        if (e.target && e.target.name === 'condition') updateConditionObservation();
+        if (e.target && e.target.name === 'accessories') updateAccessoriesObservation();
+      });
+    }
 
     // Elementos do Popup
     const popupModal = document.getElementById('popup-modal');

@@ -14,7 +14,7 @@
 </head>
 <body class="bg-slate-100">
 
-  <div id="app-container" class="main-layout">
+  <div id="app-container" class="main-layout hidden">
     <!-- Overlay -->
     <div class="overlay" id="overlay"></div>
 
@@ -197,6 +197,17 @@
       overlay.classList.remove('active');
     });
   </script>
+  
+  <!-- Script de autenticação (igual ao index/search) -->
+  <script type="module">
+  import { requireAuth, signOutAndRedirect } from '/backend/src/auth.js';
+
+  // protege a página e remove o "hidden" quando a sessão existir
+  await requireAuth();
+
+  // logout do botão lateral
+  document.getElementById('logout-button')?.addEventListener('click', signOutAndRedirect);
+</script>
 
   <!-- Lógica do estoque -->
   <script type="module" src="/backend/src/products.js"></script>
