@@ -19,18 +19,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---------- UI helpers ----------
   // ---- Calcula "Restante R$" = Total - Sinal ----
   const totalInput = document.getElementById('total-value');
-  const downInput  = document.getElementById('down-payment');
-  const restInput  = document.getElementById('remaining-value');
+  const downInput = document.getElementById('down-payment');
+  const restInput = document.getElementById('remaining-value');
 
   function calcRemaining() {
     const total = Number(totalInput.value) || 0;
-    const sinal = Number(downInput.value)  || 0;
+    const sinal = Number(downInput.value) || 0;
     const restante = Math.max(0, total - sinal);
     restInput.value = restante.toFixed(2);
   }
 
   totalInput.addEventListener('input', calcRemaining);
-  downInput.addEventListener('input',  calcRemaining);
+  downInput.addEventListener('input', calcRemaining);
   calcRemaining();
 
   function setSubmitButtonState(state, label) {
@@ -122,9 +122,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!d) return '';                                   // nada -> vazio
     if (d.length <= 2) return `(${d}`;                   // (DD
-    if (d.length <= 6) return `(${d.slice(0,2)}) ${d.slice(2)}`;          // (DD) 1234
-    if (d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`; // fixo
-    return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7,11)}`;                // celular
+    if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;          // (DD) 1234
+    if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`; // fixo
+    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7, 11)}`;                // celular
   }
 
   function handlePhoneInput(e) {
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // se selecionar tudo e apertar Backspace/Delete, limpa de uma vez
   function quickClearOnFullDelete(e) {
     const allSelected = phoneInput.selectionStart === 0 &&
-                        phoneInput.selectionEnd === phoneInput.value.length;
+      phoneInput.selectionEnd === phoneInput.value.length;
     if (allSelected && (e.key === 'Backspace' || e.key === 'Delete')) {
       e.preventDefault();
       phoneInput.value = '';
