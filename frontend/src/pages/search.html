@@ -182,44 +182,17 @@
           </div>
         </div>
         <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+          <button type="button" id="modal-pdf-button" class="btn bg-white border border-gray-300 text-gray-700 hover:bg-gray-100">
+          <i class="fas fa-file-pdf mr-2"></i> Baixar PDF
+          </button>
           <button type="button" id="modal-cancel-button" class="btn bg-gray-200 hover:bg-gray-300">Cancelar</button>
           <button type="button" id="modal-save-button" class="btn btn-primary">Salvar Alterações</button>
         </div>
       </div>
     </div>
   </div>
-    <!-- Script do menu (igual ao index/search) -->
-  <!-- <script>
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('menu-toggle'); // definido no header
-    const overlay  = document.getElementById('overlay');
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
-    function toggleSidebar() {
-      const willOpen = sidebar.classList.contains('-translate-x-full');
-      sidebar.classList.toggle('-translate-x-full');
-      sidebar.classList.toggle('translate-x-0');
-      overlay.classList.toggle('active', willOpen);
-    }
-    function closeSidebar() {
-      sidebar.classList.add('-translate-x-full');
-      sidebar.classList.remove('translate-x-0');
-      overlay.classList.remove('active');
-    }
-
-    // garante que o botão exista (página pode carregar antes)
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('menu-toggle');
-      if (btn) btn.addEventListener('click', toggleSidebar);
-
-      overlay.addEventListener('click', closeSidebar);
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
-
-      // estado inicial: fechado
-      sidebar.classList.add('-translate-x-full');
-      overlay.classList.remove('active');
-    });
-  </script> -->
-  
   <!-- Lógica da busca -->
   <script type="module" src="/backend/src/search.js"></script>
   

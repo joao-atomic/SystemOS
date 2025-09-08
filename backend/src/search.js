@@ -145,7 +145,23 @@ document.addEventListener('DOMContentLoaded', () => {
       await fetchOrders();          // recarrega
       applyFiltersAndRender();      // reaplica filtros e volta pra pág. 1
     };
+
+    const pdfBtn = document.getElementById('modal-pdf-button');
+    if (pdfBtn) {
+      // pega sempre a versão mais recente da OS antes de gerar (opcional e seguro)
+      pdfBtn.onclick = async () => {
+        const { data, error } = await supabase
+          .from('ordens_de_servico')
+          .select('*')
+          .eq('id', order.id)
+          .single();
+        generatePdfFromData(data || order);
+      };
+    }
+
+    editModal.classList.remove('hidden');
   }
+
   modalCancelButton?.addEventListener('click', () => editModal.classList.add('hidden'));
 
   resultsTableBody?.addEventListener('click', (e) => {
@@ -352,4 +368,62 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   fetchOrders();
+
+  // --- PDF ---
+  function generatePdfFromData(osData) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const fmt = (v) => (v === null || v === undefined || v === '') ? '—' : String(v);
+  const wrap = (txt, w = 180) => doc.splitTextToSize(fmt(txt), w);
+
+  const dataBR = osData.data_entrada
+    ? new Date(osData.data_entrada).toLocaleDateString('pt-BR')
+    : '—';
+
+  const total = Number(osData.valor_total ?? 0);
+  const sinal = Number(osData.sinal ?? 0);
+  const restante = total - sinal;
+
+  // Cabeçalho
+  doc.setFontSize(18);
+  doc.text(`Ordem de Serviço: ${fmt(osData.numero_ordem)}`, 14, 22);
+
+  doc.setFontSize(12);
+  doc.text(`Data de Entrada: ${dataBR}`, 14, 32);
+  doc.text(`Status: ${fmt(osData.status)}`, 14, 39);
+
+  // Cliente
+  doc.setFontSize(14);
+  doc.text('Informações do Cliente', 14, 55);
+  doc.setFontSize(12);
+  doc.text(wrap(`Cliente: ${fmt(osData.cliente)}`), 14, 65);
+  doc.text(wrap(`Telefone: ${fmt(osData.telefone)}`), 14, 72);
+  doc.text(wrap(`Endereço: ${fmt(osData.endereco)}`), 14, 79);
+  doc.text(wrap(`Origem: ${fmt(osData.origem_cliente)}`), 14, 86);
+
+  // Aparelho
+  doc.setFontSize(14);
+  doc.text('Informações do Aparelho', 14, 102);
+  doc.setFontSize(12);
+  doc.text(wrap(`Marca: ${fmt(osData.marca_aparelho)}`), 14, 112);
+  doc.text(wrap(`Modelo: ${fmt(osData.modelo_aparelho)}`), 14, 119);
+  doc.text(wrap(`Nº de Série: ${fmt(osData.numero_serie)}`), 14, 126);
+  doc.text(wrap(`Defeito: ${fmt(osData.defeito_reclamado)}`), 14, 133);
+  doc.text(wrap(`Localização: ${fmt(osData.localizacao_aparelho)}`), 14, 140);
+  doc.text(wrap(`Acessórios: ${fmt(osData.acessorios)}`), 14, 147);
+  doc.text(wrap(`Estado: ${fmt(osData.estado_aparelho)}`), 14, 154);
+  doc.text(wrap(`Observações do Estado: ${fmt(osData.estado_aparelho_obs)}`), 14, 161);
+
+  // Valores
+  doc.setFontSize(14);
+  doc.text('Valores', 14, 177);
+  doc.setFontSize(12);
+  doc.text(`Valor Total: R$ ${total.toFixed(2)}`, 14, 187);
+  doc.text(`Sinal: R$ ${sinal.toFixed(2)}`, 14, 194);
+  doc.text(`Restante: R$ ${restante.toFixed(2)}`, 14, 201);
+
+  doc.save(`OS_${fmt(osData.numero_ordem)}.pdf`);
+}
+
 });
